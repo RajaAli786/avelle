@@ -1,0 +1,67 @@
+<?php
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StoreController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AccountController;
+Route::get('/',[\App\Http\Controllers\MarketplaceController::class,'home']);
+Route::get('/api/products',[\App\Http\Controllers\MarketplaceController::class,'productApi']);
+Route::get('/api/offers',[StoreController::class,'offers']);
+Route::post('/api/promotions/quote',[StoreController::class,'quote'])->middleware('throttle:30,1');
+Route::post('/api/orders',[StoreController::class,'checkout'])->middleware('throttle:10,1');
+Route::get('/account',[AccountController::class,'index']);
+Route::get('/account/login',[AccountController::class,'form']);
+Route::get('/account/register',[AccountController::class,'registerForm']);
+Route::post('/account/login',[AccountController::class,'login'])->middleware('throttle:5,1');
+Route::post('/account/register',[AccountController::class,'register'])->middleware('throttle:5,1');
+Route::post('/account/logout',[AccountController::class,'logout']);
+Route::post('/account/profile',[AccountController::class,'update']);
+Route::post('/account/password',[AccountController::class,'password'])->middleware('throttle:5,1');
+Route::get('/admin',[AdminController::class,'index']);
+Route::post('/admin/login',[AdminController::class,'login'])->middleware('throttle:5,1');
+Route::post('/admin/logout',[AdminController::class,'logout']);
+Route::post('/admin/products',[AdminController::class,'product']);
+Route::post('/admin/promotions',[AdminController::class,'promotion']);
+Route::post('/admin/promotions/{id}/toggle',[AdminController::class,'toggle']);
+Route::post('/admin/orders/{id}',[AdminController::class,'order']);
+
+Route::post('/admin/users/{id}',[AdminController::class,'user']);
+
+Route::get('/shop',[\App\Http\Controllers\MarketplaceController::class,'listing']);
+Route::get('/categories',[\App\Http\Controllers\MarketplaceController::class,'categories']);
+Route::get('/category/{slug}',[\App\Http\Controllers\MarketplaceController::class,'category']);
+Route::get('/products/{slug}',[\App\Http\Controllers\MarketplaceController::class,'product']);
+Route::get('/cart',[\App\Http\Controllers\MarketplaceController::class,'cart']);
+Route::get('/checkout',[\App\Http\Controllers\MarketplaceController::class,'checkout']);
+Route::get('/wishlist',[\App\Http\Controllers\MarketplaceController::class,'wishlist']);
+Route::get('/offers',[\App\Http\Controllers\MarketplaceController::class,'offers']);
+Route::get('/pages/{slug}',[\App\Http\Controllers\MarketplaceController::class,'page']);
+Route::post('/contact',[\App\Http\Controllers\MarketplaceController::class,'contact'])->middleware('throttle:5,1');
+Route::get('/track-order',[\App\Http\Controllers\OrdersController::class,'tracking']);
+Route::post('/track-order',[\App\Http\Controllers\OrdersController::class,'track'])->middleware('throttle:10,1');
+Route::get('/account/orders/{reference}',[\App\Http\Controllers\OrdersController::class,'show']);
+Route::get('/account/orders/{reference}/receipt',[\App\Http\Controllers\OrdersController::class,'receipt']);
+Route::post('/account/orders/{reference}/cancel',[\App\Http\Controllers\OrdersController::class,'cancel']);
+Route::post('/account/orders/{reference}/returns',[\App\Http\Controllers\OrdersController::class,'requestReturn']);
+Route::post('/account/addresses',[\App\Http\Controllers\ShoppingController::class,'address']);
+Route::post('/account/addresses/{id}/delete',[\App\Http\Controllers\ShoppingController::class,'deleteAddress']);
+Route::post('/products/{id}/reviews',[\App\Http\Controllers\ShoppingController::class,'review'])->middleware('throttle:5,1');
+Route::get('/api/cart',[\App\Http\Controllers\ShoppingController::class,'cart']);
+Route::put('/api/cart',[\App\Http\Controllers\ShoppingController::class,'saveCart']);
+Route::get('/api/wishlist',[\App\Http\Controllers\ShoppingController::class,'wishlist']);
+Route::post('/api/wishlist',[\App\Http\Controllers\ShoppingController::class,'wish']);
+Route::post('/admin/categories',[\App\Http\Controllers\CatalogAdminController::class,'category']);
+Route::post('/admin/products/{id}/variants',[\App\Http\Controllers\CatalogAdminController::class,'variants']);
+Route::post('/admin/media/{kind}/{id}/order',[\App\Http\Controllers\CatalogAdminController::class,'mediaOrder']);
+Route::post('/admin/media/{kind}/{id}/{image}/delete',[\App\Http\Controllers\CatalogAdminController::class,'removeMedia']);
+Route::post('/admin/reviews/{id}',[\App\Http\Controllers\CatalogAdminController::class,'review']);
+Route::post('/admin/returns/{id}',[\App\Http\Controllers\CatalogAdminController::class,'returns']);
+Route::post('/admin/store-settings',[\App\Http\Controllers\CatalogAdminController::class,'settings']);
+Route::post('/admin/pages/{id}',[\App\Http\Controllers\CatalogAdminController::class,'page']);
+Route::post('/admin/support/{id}',[\App\Http\Controllers\CatalogAdminController::class,'inquiry']);
+
+foreach(['orders','addresses','profile','security'] as $section)Route::get('/account/'.$section,[AccountController::class,'index']);
+
+Route::get('/forgot-password',[\App\Http\Controllers\RecoveryController::class,'forgot']);
+Route::post('/forgot-password',[\App\Http\Controllers\RecoveryController::class,'send'])->middleware('throttle:5,1');
+Route::get('/reset-password/{token}',[\App\Http\Controllers\RecoveryController::class,'form'])->name('password.reset');
+Route::post('/reset-password',[\App\Http\Controllers\RecoveryController::class,'reset'])->middleware('throttle:5,1');

@@ -1,0 +1,7 @@
+/vendor/
+/.env
+/database/*.sqlite
+/storage/logs/*
+/storage/framework/views/*
+/storage/framework/sessions/*
+/.runtime/

@@ -1,0 +1,3 @@
+# Never expose the Laravel project root through Apache.
+# Configure a VirtualHost with DocumentRoot pointing at public instead.
+Require all denied
