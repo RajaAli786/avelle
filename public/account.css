@@ -1,0 +1,975 @@
+.customer-layout {
+  display: grid;
+  grid-template-columns: 245px minmax(0, 1fr);
+  gap: 30px;
+  align-items: start;
+  margin-top: 8px;
+  margin-bottom: 65px;
+}
+.customer-menu {
+  background: #fff;
+  border: 1px solid #e9e5ed;
+  border-radius: 12px;
+  padding: 18px 13px;
+  box-shadow: 0 7px 24px #4d315307;
+  position: sticky;
+  top: 155px;
+}
+.customer-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 22px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #f0ebf2;
+}
+.customer-identity > span {
+  display: grid;
+  place-items: center;
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+  background: #faeaf2;
+  border-radius: 14px;
+  font-size: 19px;
+  color: #c5447f;
+  font-weight: 700;
+}
+.customer-identity > div {
+  min-width: 0;
+}
+.customer-identity b {
+  font-size: 14px;
+  font-weight: 600;
+  color: #433a50;
+  display: block;
+  line-height: 1.6;
+}
+.customer-identity small {
+  display: block;
+  font-size: 11px;
+  color: #8c8196;
+  overflow-wrap: anywhere;
+  margin-top: 3px;
+}
+.account-menu-caption {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  color: #a697ae;
+  padding: 0 12px;
+  margin: 0 0 10px;
+}
+.customer-menu > a {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 11px;
+  padding: 12px;
+  margin: 4px 0;
+  border-radius: 7px;
+  font-size: 13px;
+  color: #786b87;
+  font-weight: 500;
+  border: 0;
+  background: none;
+}
+.customer-menu > a > span {
+  font-size: 13px;
+}
+.customer-menu > a > i {
+  font-size: 16px;
+  color: #a48eaf;
+}
+.customer-menu > a .account-nav-arrow {
+  font-size: 17px;
+  margin-left: auto;
+  color: #b7a7c1;
+}
+.customer-menu > a.active {
+  background: #faedf4;
+  color: #b92f6c;
+}
+.customer-menu > a.active > i {
+  color: #cf5b91;
+}
+.customer-menu > a:hover {
+  background: #fcf6fa;
+  color: #b92f6c;
+}
+.customer-menu > form {
+  border-top: 1px solid #f0ebf2;
+  margin-top: 14px;
+  padding-top: 7px;
+}
+.customer-menu > form > button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 13px;
+  color: #9b758d;
+  padding: 13px;
+}
+.account-sidebar-note {
+  padding: 19px 13px 10px;
+  border-top: 1px solid #f0ebf2;
+  margin-top: 8px;
+}
+.account-sidebar-note > i {
+  display: block;
+  font-size: 20px;
+  color: #dba6bf;
+  margin-bottom: 12px;
+}
+.account-sidebar-note b {
+  font-size: 13px;
+  font-weight: 600;
+  color: #8b6c88;
+  display: block;
+}
+.account-sidebar-note p {
+  font-size: 11px;
+  color: #a696ae;
+  line-height: 1.8;
+  margin: 9px 0 12px;
+}
+.account-sidebar-note a {
+  font-size: 11px;
+  font-weight: 600;
+  color: #b66a92;
+}
+.customer-content {
+  min-width: 0;
+}
+.customer-welcome {
+  background: linear-gradient(115deg, #fff3f8, #f6f1ff);
+  border: 1px solid #f1e6ef;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  margin-bottom: 22px;
+  padding: 29px 30px;
+  min-height: 178px;
+}
+.customer-welcome > div:first-child {
+  position: relative;
+  z-index: 1;
+}
+.customer-welcome .eyebrow {
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  color: #b47c9c;
+}
+.customer-welcome h1 {
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -0.9px;
+  color: #3e354b;
+  margin: 12px 0 10px;
+  line-height: 1.3;
+}
+.customer-welcome h1 > span {
+  font-size: 23px;
+  color: #d9aa64;
+  margin-left: 13px;
+}
+.customer-welcome p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #8e7d9a;
+  margin-bottom: 17px;
+}
+.customer-welcome a {
+  font-size: 12px;
+  color: #bc5c8c;
+  font-weight: 600;
+}
+.customer-welcome-art {
+  position: relative;
+  width: 100px;
+  flex-shrink: 0;
+  margin-right: 15px;
+  transform: rotate(9deg);
+}
+.customer-welcome-art > i {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 104px;
+  font-size: 48px;
+  color: #d88bab;
+  background: #fff5fa;
+  border: 1px solid #eccada;
+  border-radius: 14px;
+  box-shadow: 12px 12px 0 #e9e3f6;
+}
+.customer-welcome-art > span {
+  position: absolute;
+  font-size: 9px;
+  right: -13px;
+  bottom: -13px;
+  border-radius: 6px;
+  padding: 9px 10px;
+  background: #fff;
+  color: #bb7b9b;
+  box-shadow: 0 4px 12px #bc8bac13;
+}
+.account-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.account-stat-grid > a {
+  position: relative;
+  padding: 23px;
+  background: #fff;
+  border: 1px solid #e9e4ef;
+  border-radius: 10px;
+  display: block;
+  transition: border-color 0.2s;
+}
+.account-stat-grid > a:hover {
+  border-color: #e6bdd3;
+}
+.account-stat-grid > a > i {
+  display: grid;
+  place-items: center;
+  width: 33px;
+  height: 33px;
+  border-radius: 10px;
+  background: #f7f1fb;
+  color: #ab8fbe;
+  font-size: 16px;
+  margin-bottom: 17px;
+}
+.account-stat-grid > a > b {
+  display: block;
+  font-size: 28px;
+  color: #443b52;
+  font-weight: 750;
+  margin: 0 0 7px;
+  line-height: 1.2;
+}
+.account-stat-grid > a > span {
+  font-size: 12px;
+  color: #94839f;
+}
+.customer-content .form-card {
+  border: 1px solid #e9e5ee;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: none;
+  padding: 26px;
+  margin-bottom: 22px;
+}
+.customer-content .form-card h2 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: #4b3d59;
+}
+.customer-content .section-title {
+  margin-bottom: 20px;
+}
+.customer-content .section-title h2 {
+  font-size: 20px;
+}
+.customer-content .section-title .eyebrow {
+  font-size: 8px;
+  margin-bottom: 6px;
+}
+.customer-content .section-title > a {
+  font-size: 12px;
+  color: #bf6c96;
+}
+.customer-content .form-card label {
+  display: block;
+  font-size: 13px;
+  color: #8b7698;
+  font-weight: 500;
+  margin-bottom: 17px;
+  line-height: 1.6;
+}
+.customer-content .form-card label input:not([type="checkbox"]),
+.customer-content .form-card label textarea,
+.customer-content .form-card label select {
+  width: 100%;
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #655171;
+  background: #fff;
+  border: 1px solid #e2dbe9;
+  border-radius: 6px;
+  padding: 12px;
+  line-height: 1.5;
+}
+.customer-content .form-card .check-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.customer-content .form-card input[type="checkbox"] {
+  accent-color: #cc4a85;
+}
+.account-empty {
+  text-align: center;
+  padding: 35px 12px;
+}
+.account-empty > i {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 19px;
+  background: #f9f0f6;
+  color: #d3a5bf;
+  font-size: 27px;
+  margin: 0 auto 17px;
+}
+.account-empty h2,
+.account-empty h3 {
+  font-size: 19px !important;
+  font-weight: 650;
+  color: #65516e;
+  letter-spacing: -0.4px;
+  margin: 0 0 12px;
+}
+.account-empty p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #97849f;
+  max-width: 360px;
+  margin: 0 auto 22px;
+}
+.customer-content .account-order-card {
+  border: 1px solid #ebe5ef;
+  border-radius: 9px;
+  padding: 18px;
+  margin: 12px 0;
+  gap: 17px;
+  background: #fff;
+  box-shadow: none;
+  transition: border-color 0.18s;
+}
+.customer-content .account-order-card:hover {
+  border-color: #e1bad1;
+}
+.customer-content .account-order-card > div > b {
+  font-size: 13px;
+  font-weight: 600;
+  color: #675173;
+}
+.customer-content .account-order-card small {
+  font-size: 11px;
+  color: #a08bad;
+  line-height: 1.7;
+  margin-top: 5px;
+}
+.customer-content .account-order-card > strong {
+  font-size: 15px;
+  color: #725b7d;
+}
+.customer-content .account-order-card > span:last-child {
+  font-size: 11px;
+  color: #bb78a0;
+}
+.customer-content .order-badge {
+  font-size: 10px;
+  padding: 6px 9px;
+  border-radius: 5px;
+}
+.account-quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.account-quick-grid > a {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 23px;
+  background: #fff;
+  border: 1px solid #eae4ef;
+  border-radius: 10px;
+}
+.account-quick-grid > a > i {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  flex-shrink: 0;
+  background: #f8edf4;
+  color: #cc8eb0;
+  border-radius: 10px;
+  font-size: 17px;
+}
+.account-quick-grid h3 {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 650;
+  color: #7b5f88;
+  margin: 0 0 9px;
+}
+.account-quick-grid p {
+  font-size: 12px;
+  line-height: 1.9;
+  color: #a08ca9;
+  margin: 0 0 14px;
+}
+.account-quick-grid b {
+  font-size: 11px;
+  font-weight: 600;
+  color: #bd6d98;
+}
+.account-section-heading {
+  margin-bottom: 24px;
+}
+.account-section-heading .eyebrow {
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  color: #bc83a4;
+}
+.account-section-heading h1 {
+  font-size: 28px;
+  line-height: 1.3;
+  letter-spacing: -0.8px;
+  color: #4b3c58;
+  margin: 10px 0 12px;
+}
+.account-section-heading p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #947d9f;
+  margin: 0;
+}
+.account-order-filters {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 25px;
+  background: #faf7fc;
+  border: 1px solid #eee6f3;
+  padding: 19px;
+  border-radius: 9px;
+  flex-wrap: wrap;
+}
+.account-order-filters label {
+  font-size: 11px;
+  color: #8b769a;
+  margin: 0;
+  min-width: 0;
+  flex: 1;
+}
+.account-order-filters label:first-child {
+  flex: 2;
+}
+.account-order-filters input,
+.account-order-filters select {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  font-size: 12px;
+  padding: 11px;
+  border-color: #e3dbe9;
+  border-radius: 6px;
+}
+.account-order-filters .pink-button {
+  padding: 12px 16px;
+  font-size: 11px;
+  min-height: 41px;
+}
+.account-order-filters > a {
+  font-size: 11px;
+  color: #a47895;
+  padding: 12px 2px;
+}
+.account-info {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  padding: 17px 19px;
+  background: #f7f0fa;
+  border: 1px solid #eae0f2;
+  border-radius: 9px;
+  margin-bottom: 23px;
+  color: #9b7eac;
+}
+.account-info > i {
+  font-size: 17px;
+  color: #b7a0cb;
+}
+.account-info > p {
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 0;
+}
+.account-review-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 15px;
+}
+.account-reviewed-label {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #a48bb2;
+  margin-bottom: 9px;
+  display: block;
+}
+.account-reviewed-label i {
+  color: #7da999;
+  margin-right: 4px;
+}
+.account-review-heading h2 {
+  font-size: 17px !important;
+  line-height: 1.6;
+  margin: 0;
+}
+.account-state {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 5px;
+  background: #f1eaf7;
+  color: #9573aa;
+  white-space: nowrap;
+}
+.account-state.pending,
+.account-state.requested {
+  background: #fff3e3;
+  color: #aa854c;
+}
+.account-state.approved,
+.account-state.completed,
+.account-state.ready {
+  background: #eaf6ef;
+  color: #699b80;
+}
+.account-state.received {
+  background: #eaf1fc;
+  color: #819ac2;
+}
+.account-state.rejected {
+  background: #fcebf0;
+  color: #bd7b95;
+}
+.account-review-state {
+  font-size: 12px;
+  color: #9b85a6;
+  line-height: 1.9;
+}
+.account-review-card details {
+  border-top: 1px solid #efe7f4;
+  padding-top: 16px;
+  margin-top: 17px;
+}
+.account-review-card summary {
+  font-size: 12px;
+  color: #bb6b99;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.account-return-date {
+  font-size: 11px;
+  color: #a38fb0;
+  margin-bottom: 20px;
+}
+.account-return-item {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0eaf4;
+  padding: 13px 0;
+  margin-bottom: 17px;
+  font-size: 12px;
+  color: #887195;
+}
+.account-return-item > b {
+  font-weight: 600;
+}
+.account-return-item > span {
+  color: #ab96b6;
+  font-size: 11px;
+}
+.account-return-card > p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #977ca4;
+}
+.account-refund-record {
+  background: #f6f8fc;
+  border-radius: 5px;
+  padding: 12px;
+}
+.account-return-card .text-link {
+  font-size: 12px;
+}
+.account-address-empty {
+  grid-column: 1/-1;
+  text-align: center;
+}
+.account-address-empty > i {
+  font-size: 28px;
+  color: #c7a5d8;
+}
+.account-address-empty h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #8d6e9e;
+  margin: 15px 0 8px;
+}
+.account-address-empty p {
+  font-size: 12px;
+  color: #a58bb3;
+}
+.saved-address {
+  border-color: #e8deed;
+  border-radius: 10px;
+}
+.saved-address h3 {
+  font-size: 16px;
+}
+.saved-address > p {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #9981a5;
+}
+.saved-address summary {
+  font-size: 12px;
+  color: #ba78a1;
+}
+.saved-address .remove-link {
+  font-size: 12px;
+}
+.customer-content .pagination {
+  font-size: 12px;
+  gap: 16px;
+}
+.customer-content .pagination a {
+  font-size: 12px;
+}
+.review-eligibility-box {
+  background: #faf6fc;
+  border: 1px solid #ede3f3;
+  border-radius: 10px;
+  padding: 25px;
+  margin-top: 26px;
+}
+.review-eligibility-box h3 {
+  font-size: 18px;
+  font-weight: 650;
+  color: #7f6192;
+  line-height: 1.5;
+}
+.review-eligibility-box p {
+  font-size: 13px;
+  color: #a38caf;
+  line-height: 1.9;
+}
+.review-eligibility-box label {
+  display: block;
+  font-size: 12px;
+  color: #9980a7;
+  margin: 17px 0;
+}
+.review-eligibility-box label input,
+.review-eligibility-box label select,
+.review-eligibility-box label textarea {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  font-size: 14px;
+  padding: 12px;
+}
+.review-submission-status {
+  border-bottom: 1px solid #e8daef;
+  margin-bottom: 22px;
+  padding-bottom: 19px;
+}
+.review-submission-status > b {
+  font-size: 14px;
+  color: #a476b6;
+}
+.review-submission-status a {
+  font-size: 12px;
+  color: #b17aa7;
+}
+.review-submission-status p {
+  margin: 9px 0 15px;
+}
+.customer-layout :focus-visible,
+.review-eligibility-box :focus-visible {
+  outline-color: #db83b0;
+  outline-offset: 3px;
+}
+@media (max-width: 1000px) {
+  .customer-layout {
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 22px;
+  }
+  .customer-menu {
+    padding: 14px 9px;
+  }
+  .customer-identity {
+    gap: 9px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .customer-identity > span {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  .customer-identity b {
+    font-size: 12px;
+  }
+  .customer-identity small {
+    font-size: 10px;
+  }
+  .customer-welcome {
+    padding: 25px;
+  }
+  .customer-welcome h1 {
+    font-size: 26px;
+  }
+  .customer-welcome-art {
+    width: 75px;
+    margin-right: 0;
+    opacity: 0.7;
+  }
+  .customer-welcome-art > i {
+    width: 67px;
+    height: 85px;
+    font-size: 36px;
+  }
+  .account-stat-grid {
+    gap: 12px;
+  }
+  .account-stat-grid > a {
+    padding: 17px;
+  }
+  .account-stat-grid > a > b {
+    font-size: 24px;
+  }
+  .customer-content .form-card {
+    padding: 22px;
+  }
+  .account-quick-grid {
+    grid-template-columns: 1fr;
+  }
+  .account-order-filters label:first-child {
+    flex-basis: 100%;
+  }
+  .customer-content .account-order-card {
+    flex-wrap: wrap;
+  }
+  .customer-content .account-order-card > div {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+@media (max-width: 700px) {
+  .customer-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .customer-menu {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 8px;
+    padding: 15px;
+  }
+  .customer-identity {
+    grid-column: 1/-1;
+    padding-bottom: 15px;
+    margin-bottom: 14px;
+    gap: 12px;
+  }
+  .customer-identity > span {
+    width: 41px;
+    height: 41px;
+    font-size: 18px;
+  }
+  .customer-identity b {
+    font-size: 14px;
+  }
+  .customer-identity small {
+    font-size: 11px;
+  }
+  .account-menu-caption {
+    grid-column: 1/-1;
+  }
+  .customer-menu > a {
+    font-size: 12px;
+    padding: 11px 9px;
+    margin: 3px 0;
+    gap: 8px;
+  }
+  .customer-menu > a > span {
+    font-size: 12px;
+  }
+  .customer-menu > a > i {
+    font-size: 15px;
+  }
+  .customer-menu > form {
+    grid-column: 1/-1;
+    margin-top: 8px;
+  }
+  .customer-menu > form > button {
+    font-size: 12px;
+    padding: 11px;
+  }
+  .account-sidebar-note {
+    display: none;
+  }
+  .customer-welcome {
+    padding: 22px;
+    min-height: 167px;
+  }
+  .customer-welcome h1 {
+    font-size: 25px;
+    margin-top: 12px;
+  }
+  .customer-welcome p {
+    font-size: 12px;
+    max-width: 210px;
+  }
+  .customer-welcome a {
+    font-size: 11px;
+  }
+  .customer-welcome .eyebrow {
+    font-size: 8px;
+  }
+  .customer-welcome-art {
+    width: 61px;
+    opacity: 0.6;
+  }
+  .customer-welcome-art > i {
+    width: 54px;
+    height: 74px;
+    font-size: 29px;
+  }
+  .customer-welcome-art > span {
+    font-size: 7px;
+    padding: 7px;
+    right: -7px;
+  }
+  .account-stat-grid {
+    gap: 9px;
+  }
+  .account-stat-grid > a {
+    padding: 16px 12px;
+  }
+  .account-stat-grid > a > i {
+    width: 29px;
+    height: 29px;
+    font-size: 14px;
+    margin-bottom: 13px;
+  }
+  .account-stat-grid > a > b {
+    font-size: 22px;
+  }
+  .account-stat-grid > a > span {
+    font-size: 10px;
+    line-height: 1.7;
+    display: block;
+  }
+  .customer-content .form-card {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .customer-content .section-title h2 {
+    font-size: 19px;
+  }
+  .customer-content .section-title > a {
+    font-size: 11px;
+  }
+  .customer-content .section-title .eyebrow {
+    font-size: 7px;
+  }
+  .account-section-heading h1 {
+    font-size: 25px;
+  }
+  .account-section-heading p {
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+  .account-order-filters {
+    padding: 16px;
+    gap: 12px;
+  }
+  .account-order-filters label {
+    flex-basis: 100%;
+  }
+  .account-order-filters .pink-button {
+    flex: 1;
+  }
+  .account-review-heading {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .account-review-heading h2 {
+    font-size: 16px !important;
+  }
+  .account-state {
+    font-size: 10px;
+  }
+  .account-return-item {
+    align-items: start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .account-empty h2,
+  .account-empty h3 {
+    font-size: 18px !important;
+  }
+  .account-empty p {
+    font-size: 12px;
+  }
+  .account-quick-grid > a {
+    padding: 20px;
+  }
+  .review-eligibility-box {
+    padding: 20px;
+  }
+  .review-eligibility-box h3 {
+    font-size: 17px;
+  }
+  .review-eligibility-box p {
+    font-size: 12px;
+  }
+}
+/* Keep support text comfortably readable against the light account theme. */
+.customer-content .form-card label,
+.account-section-heading p,
+.account-review-state,
+.customer-content .account-empty p,
+.account-info p {
+  color: #796786;
+}
+.customer-content .account-order-card small,
+.account-stat-grid > a > span,
+.account-return-card > p,
+.saved-address > p {
+  color: #83718f;
+}
+.account-quick-grid p,
+.customer-welcome p {
+  color: #8a7597;
+}
+.review-eligibility-box p,
+.review-eligibility-box label {
+  color: #826d91;
+}

@@ -1,1 +1,45 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin sign in · AVELLE</title><link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.min.css') }}"><link rel="stylesheet" href="{{ asset('vendor/adminlte/adminlte.min.css') }}"><link rel="stylesheet" href="{{ asset('admin.css') }}?v=4"></head><body class="admin-login-page"><main class="login-box"><div class="admin-login-brand"><span class="brand-mark">A</span><b>AVELLE</b><span>STORE ADMIN</span></div><div class="card"><div class="card-body p-4"><div class="login-icon"><i class="bi bi-shield-lock"></i></div><h1>Welcome back.</h1><p class="text-secondary small mb-4">Sign in to manage your store.</p>@if($errors->any())<div class="alert alert-danger small" role="alert">{{ $errors->first() }}</div>@endif<form method="POST" action="{{ url('/admin/login') }}">@csrf<label class="form-label small" for="admin-email">Admin email</label><div class="input-group mb-3"><span class="input-group-text bg-white"><i class="bi bi-envelope"></i></span><input class="form-control" id="admin-email" name="email" type="email" value="{{ old('email') }}" required autocomplete="username" placeholder="you@example.com"></div><label class="form-label small" for="admin-password">Password</label><div class="input-group mb-4"><span class="input-group-text bg-white"><i class="bi bi-lock"></i></span><input class="form-control" id="admin-password" name="password" type="password" required autocomplete="current-password"></div><button class="btn btn-primary w-100">Sign in to dashboard <i class="bi bi-arrow-right ms-2"></i></button></form><div class="admin-login-note"><i class="bi bi-database-lock"></i> Database authentication · Admin access only</div></div></div><a class="back-to-store" href="{{ url('/') }}"><i class="bi bi-arrow-left"></i> Back to storefront</a></main></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin sign in · AVELLE</title>
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/adminlte.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin.css') }}?v=4">
+</head>
+
+<body class="admin-login-page">
+    <main class="login-box">
+        <div class="admin-login-brand"><span class="brand-mark">A</span><b>AVELLE</b><span>STORE ADMIN</span></div>
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="login-icon"><i class="bi bi-shield-lock"></i></div>
+                <h1>Welcome back.</h1>
+                <p class="text-secondary small mb-4">Sign in to manage your store.</p>
+                @if ($errors->any())
+                <div class="alert alert-danger small" role="alert">{{ $errors->first() }}</div>
+                @endif
+                <form method="POST" action="{{ url('/admin/login') }}">@csrf<label class="form-label small"
+                        for="admin-email">Admin email</label>
+                    <div class="input-group mb-3"><span class="input-group-text bg-white"><i
+                                class="bi bi-envelope"></i></span><input class="form-control" id="admin-email"
+                            name="email" type="email" value="{{ old('email') }}" required autocomplete="username"
+                            placeholder="you@example.com"></div><label class="form-label small"
+                        for="admin-password">Password</label>
+                    <div class="input-group mb-4"><span class="input-group-text bg-white"><i
+                                class="bi bi-lock"></i></span><input class="form-control" id="admin-password"
+                            name="password" type="password" required autocomplete="current-password"></div><button
+                        class="btn btn-primary w-100">Sign in to dashboard <i
+                            class="bi bi-arrow-right ms-2"></i></button>
+                </form>
+                <div class="admin-login-note"><i class="bi bi-database-lock"></i> Database authentication · Admin access
+                    only</div>
+            </div>
+        </div><a class="back-to-store" href="{{ url('/') }}"><i class="bi bi-arrow-left"></i> Back to
+            storefront</a>
+    </main>
+</body>
+
+</html>

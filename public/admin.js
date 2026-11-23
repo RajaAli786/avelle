@@ -1,11 +1,144 @@
-'use strict';
-const pages={dashboard:'Dashboard',products:'Products',categories:'Categories',reviews:'Reviews',returns:'Returns',pages:'Content pages',support:'Support','store-settings':'Store settings',orders:'Orders',customers:'Users & customers',offers:'Coupons & referrals',settings:'My admin account'};
-function showPage(){const key=location.hash.slice(1)||document.body.dataset.initialPage||'dashboard',active=pages[key]?key:'dashboard';document.querySelectorAll('.admin-page').forEach(p=>p.classList.toggle('is-active',p.id===active));document.querySelectorAll('[data-admin-nav]').forEach(a=>a.classList.toggle('active',a.dataset.adminNav===active));document.getElementById('adminPageTitle').textContent=pages[active];document.getElementById('adminBreadcrumb').textContent=pages[active];document.getElementById('adminSearch').value='';document.querySelectorAll('[data-search-row]').forEach(r=>r.hidden=false);}
-window.addEventListener('hashchange',showPage);showPage();
-document.addEventListener('click',e=>{const trigger=e.target.closest('[data-open-editor]');if(!trigger)return;const target=document.getElementById(trigger.dataset.openEditor);if(!target)return;const section=target.closest('.admin-page');if(section){location.hash=section.id;showPage()}target.open=true;target.scrollIntoView({behavior:'smooth',block:'start'});target.querySelector('input:not([type=hidden])')?.focus({preventScroll:true});});
-document.getElementById('adminSearch').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim();document.querySelectorAll('.admin-page.is-active [data-search-row]').forEach(row=>row.hidden=!row.textContent.toLowerCase().includes(q));});
-document.querySelectorAll('select[name=kind]').forEach(select=>{const sync=()=>{const checkbox=select.form.querySelector('input[type=checkbox][name=show_banner]');if(checkbox){checkbox.disabled=select.value==='referral';if(checkbox.disabled)checkbox.checked=false}};select.addEventListener('change',sync);sync();});
-document.querySelectorAll('form').forEach(form=>form.addEventListener('submit',()=>{const button=form.querySelector('button[type=submit],button.btn-primary');if(button){button.disabled=true;button.dataset.originalText=button.textContent;button.textContent='Saving…'}}));
+"use strict";
+const pages = {
+  dashboard: "Dashboard",
+  products: "Products",
+  categories: "Categories",
+  sellers: "Sellers",
+  "seller-orders": "Seller orders & payouts",
+  reviews: "Reviews",
+  returns: "Returns",
+  pages: "Content pages",
+  support: "Support",
+  "store-settings": "Store settings",
+  orders: "Orders",
+  customers: "Users & customers",
+  offers: "Coupons & referrals",
+  settings: "My admin account",
+};
+function showPage() {
+  if (!document.getElementById("adminPageTitle")) return;
+  const key = location.hash.slice(1) || document.body.dataset.initialPage || "dashboard",
+    active = pages[key] ? key : "dashboard";
+  document.querySelectorAll(".admin-page").forEach((p) => p.classList.toggle("is-active", p.id === active));
+  document
+    .querySelectorAll("[data-admin-nav]")
+    .forEach((a) => a.classList.toggle("active", a.dataset.adminNav === active));
+  document.getElementById("adminPageTitle").textContent = pages[active];
+  document.getElementById("adminBreadcrumb").textContent = pages[active];
+  document.getElementById("adminSearch").value = "";
+  document.querySelectorAll("[data-search-row]").forEach((r) => (r.hidden = false));
+}
+window.addEventListener("hashchange", showPage);
+showPage();
+document.addEventListener("click", (e) => {
+  const link = e.target.closest("[data-admin-nav]");
+  if (link && window.innerWidth < 992) {
+    document.body.classList.remove("sidebar-open");
+    document.body.classList.add("sidebar-collapse");
+  }
+});
+document.addEventListener("click", (e) => {
+  const trigger = e.target.closest("[data-open-editor]");
+  if (!trigger) return;
+  const target = document.getElementById(trigger.dataset.openEditor);
+  if (!target) return;
+  const section = target.closest(".admin-page");
+  if (section) {
+    location.hash = section.id;
+    showPage();
+  }
+  target.open = true;
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
+  target.querySelector("input:not([type=hidden])")?.focus({ preventScroll: true });
+});
+document.getElementById("adminSearch")?.addEventListener("input", (e) => {
+  const q = e.target.value.toLowerCase().trim();
+  document
+    .querySelectorAll(".admin-page.is-active [data-search-row]")
+    .forEach((row) => (row.hidden = !row.textContent.toLowerCase().includes(q)));
+});
+document.querySelectorAll("select[name=kind]").forEach((select) => {
+  const sync = () => {
+    const checkbox = select.form.querySelector("input[type=checkbox][name=show_banner]");
+    if (checkbox) {
+      checkbox.disabled = select.value === "referral";
+      if (checkbox.disabled) checkbox.checked = false;
+    }
+  };
+  select.addEventListener("change", sync);
+  sync();
+});
+document.querySelectorAll("form").forEach((form) =>
+  form.addEventListener("submit", () => {
+    const button = form.querySelector("button[type=submit],button.btn-primary");
+    if (button) {
+      button.disabled = true;
+      button.dataset.originalText = button.textContent;
+      button.textContent = "Saving…";
+    }
+  }),
+);
 
-document.addEventListener('click',e=>{let b=e.target.closest('[data-add-spec],[data-add-variant],[data-remove-row],[data-image-up],[data-image-down]');if(!b)return;if(b.hasAttribute('data-remove-row')){b.parentElement.remove();return}if(b.hasAttribute('data-add-spec')){b.form.querySelector('[data-spec-list]').insertAdjacentHTML('beforeend','<div class="d-flex gap-2 mb-2"><input class="form-control" name="spec_keys[]" placeholder="Attribute name"><input class="form-control" name="spec_values[]" placeholder="Attribute value"><button type="button" class="btn btn-light" data-remove-row>×</button></div>');return}if(b.hasAttribute('data-add-variant')){let list=b.form.querySelector('[data-variant-list]'),i=Date.now();list.insertAdjacentHTML('beforeend','<div class="variant-row">'+['size','color','sku','price','stock'].map(k=>'<label>'+k+'<input class="form-control" name="variants['+i+']['+k+']" '+(['size','color','stock'].includes(k)?'required':'')+'></label>').join('')+'<label>Active<select class="form-select" name="variants['+i+'][active]"><option value="1">Yes</option><option value="0">No</option></select></label><button type="button" class="btn btn-light" data-remove-row>×</button></div>');return}let row=b.closest('.admin-image');if(b.hasAttribute('data-image-up')&&row.previousElementSibling)row.parentElement.insertBefore(row,row.previousElementSibling);if(b.hasAttribute('data-image-down')&&row.nextElementSibling)row.parentElement.insertBefore(row.nextElementSibling,row)});
-document.querySelectorAll('input[type=file][multiple]').forEach(input=>input.addEventListener('change',()=>{let box=input.form.querySelector('.upload-preview');box.replaceChildren();for(let f of input.files){let img=document.createElement('img');img.src=URL.createObjectURL(f);img.alt=f.name;img.onload=()=>URL.revokeObjectURL(img.src);box.append(img)}}));
+document.addEventListener("click", (e) => {
+  let b = e.target.closest(
+    "[data-add-spec],[data-add-variant],[data-remove-row],[data-image-up],[data-image-down]",
+  );
+  if (!b) return;
+  if (b.hasAttribute("data-remove-row")) {
+    b.parentElement.remove();
+    return;
+  }
+  if (b.hasAttribute("data-add-spec")) {
+    b.form
+      .querySelector("[data-spec-list]")
+      .insertAdjacentHTML(
+        "beforeend",
+        '<div class="d-flex gap-2 mb-2"><input class="form-control" name="spec_keys[]" placeholder="Attribute name"><input class="form-control" name="spec_values[]" placeholder="Attribute value"><button type="button" class="btn btn-light" data-remove-row>×</button></div>',
+      );
+    return;
+  }
+  if (b.hasAttribute("data-add-variant")) {
+    let list = b.form.querySelector("[data-variant-list]"),
+      i = Date.now();
+    list.insertAdjacentHTML(
+      "beforeend",
+      '<div class="variant-row">' +
+        ["size", "color", "sku", "price", "stock"]
+          .map(
+            (k) =>
+              "<label>" +
+              k +
+              '<input class="form-control" name="variants[' +
+              i +
+              "][" +
+              k +
+              ']" ' +
+              (["size", "color", "stock"].includes(k) ? "required" : "") +
+              "></label>",
+          )
+          .join("") +
+        '<label>Active<select class="form-select" name="variants[' +
+        i +
+        '][active]"><option value="1">Yes</option><option value="0">No</option></select></label><button type="button" class="btn btn-light" data-remove-row>×</button></div>',
+    );
+    return;
+  }
+  let row = b.closest(".admin-image");
+  if (b.hasAttribute("data-image-up") && row.previousElementSibling)
+    row.parentElement.insertBefore(row, row.previousElementSibling);
+  if (b.hasAttribute("data-image-down") && row.nextElementSibling)
+    row.parentElement.insertBefore(row.nextElementSibling, row);
+});
+document.querySelectorAll("input[type=file][multiple]").forEach((input) =>
+  input.addEventListener("change", () => {
+    let box = input.form.querySelector(".upload-preview");
+    box.replaceChildren();
+    for (let f of input.files) {
+      let img = document.createElement("img");
+      img.src = URL.createObjectURL(f);
+      img.alt = f.name;
+      img.onload = () => URL.revokeObjectURL(img.src);
+      box.append(img);
+    }
+  }),
+);

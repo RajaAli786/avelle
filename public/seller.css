@@ -1,0 +1,170 @@
+.seller-onboarding {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 70px;
+  padding-top: 65px;
+  padding-bottom: 80px;
+}
+.seller-onboarding h1 {
+  font-size: 54px;
+  line-height: 1.1;
+  margin: 18px 0;
+}
+.seller-onboarding p,
+.seller-onboarding li {
+  line-height: 1.8;
+}
+.seller-onboarding li {
+  margin: 15px 0;
+}
+.seller-panel {
+  padding: 28px;
+  border: 1px solid #e8e2e7;
+  border-radius: 14px;
+  background: #fff;
+  margin-bottom: 30px;
+}
+.seller-panel label,
+.seller-workspace label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+.seller-panel input,
+.seller-panel textarea,
+.seller-workspace input,
+.seller-workspace textarea {
+  display: block;
+  width: 100%;
+  border: 1px solid #dcd4db;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 7px;
+  font: inherit;
+  background: #fff;
+}
+.seller-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.seller-workspace {
+  padding-top: 35px;
+  padding-bottom: 60px;
+}
+.seller-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.seller-heading h1 {
+  font-size: 32px;
+  margin: 12px 0;
+}
+.seller-tabs {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 22px 0 30px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 16px;
+}
+.seller-tabs a {
+  font-weight: 700;
+  color: #bd2468;
+}
+.seller-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin: 24px 0;
+}
+.seller-metrics div {
+  padding: 24px;
+  border: 1px solid #e4dce2;
+  border-radius: 12px;
+}
+.seller-metrics span {
+  display: block;
+  font-size: 13px;
+  color: #756a73;
+}
+.seller-metrics strong {
+  font-size: 26px;
+  display: block;
+  margin-top: 12px;
+}
+.seller-workspace .admin-page {
+  display: block;
+  margin: 35px 0;
+}
+.seller-workspace section {
+  scroll-margin-top: 180px;
+}
+.seller-workspace details summary {
+  cursor: pointer;
+  padding: 12px;
+  font-weight: 600;
+}
+.seller-workspace input[type="checkbox"] {
+  width: auto;
+  display: inline-block;
+}
+.seller-workspace .editor {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+.seller-workspace .editor-card {
+  padding: 22px;
+  margin: 18px 0;
+}
+.seller-workspace .product-cell img {
+  width: 50px;
+}
+.seller-workspace a {
+  text-decoration: none;
+}
+@media (max-width: 760px) {
+  .seller-onboarding {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding-top: 30px;
+  }
+  .seller-onboarding h1 {
+    font-size: 38px;
+  }
+  .seller-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+  .seller-fields,
+  .seller-workspace .editor {
+    grid-template-columns: 1fr;
+  }
+  .seller-heading {
+    display: block;
+  }
+  .seller-panel {
+    padding: 20px;
+  }
+  .seller-metrics strong {
+    font-size: 22px;
+  }
+}
+body {
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 14px;
+  color: #28222c;
+  background: #fff;
+}
+.seller-workspace .page-section-heading {
+  gap: 15px;
+}
+.seller-workspace .editor-summary {
+  font-size: 15px;
+}
+.seller-workspace .market-actions svg {
+  width: 24px;
+}

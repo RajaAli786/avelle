@@ -1,1 +1,40 @@
-<article class="shop-card" data-product-card="{{ $p->id }}"><div class="shop-card-image"><a href="{{ $p->url }}"><img src="{{ $p->cover }}" alt="{{ $p->name }}" loading="lazy">@if($p->second)<img class="hover-image" src="{{ $p->second }}" alt="{{ $p->name }} alternate view" loading="lazy">@endif</a><button class="wish-button" data-wish-product="{{ $p->id }}" aria-label="Save {{ $p->name }}" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20 4c-3-2-6 0-8 2-2-2-5-4-8-2-5 4 0 10 8 17 8-7 13-13 8-17Z"/></svg></button>@if(!$p->stock)<span class="sold-out-label">Sold out</span>@elseif($p->tag)<span class="card-tag">{{ $p->tag }}</span>@endif<a class="card-shop-link" href="{{ $p->url }}">Choose your style ↗</a></div><div class="shop-card-info"><div class="card-category">{{ $p->brand ?: $p->category }}</div><a class="card-name" href="{{ $p->url }}">{{ $p->name }}</a><div class="card-price"><strong>₹{{ number_format($p->display_price) }}</strong>@if($p->old>$p->display_price)<del>₹{{ number_format($p->old) }}</del><span>{{ round((1-$p->display_price/$p->old)*100) }}% off</span>@endif</div><div class="card-rating">@if($p->review_count)<span>★ {{ $p->review_average }}</span><small>({{ $p->review_count }})</small>@else<small>New find</small>@endif<span class="card-audience">{{ $p->audience==='girls'?'Girls':($p->audience==='both'?'Women & girls':'Women') }}</span></div><div class="product-offer-note" data-product-offer="{{ $p->id }}"></div></div></article>
+<article class="shop-card" data-product-card="{{ $p->id }}">
+    <div class="shop-card-image"><a href="{{ $p->url }}"><img src="{{ $p->cover }}" alt="{{ $p->name }}"
+                loading="lazy">
+            @if ($p->second)
+                <img class="hover-image" src="{{ $p->second }}" alt="{{ $p->name }} alternate view" loading="lazy">
+            @endif
+        </a>
+        <button class="wish-button" data-wish-product="{{ $p->id }}" aria-label="Save {{ $p->name }}"
+            aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                aria-hidden="true">
+                <path d="M20 4c-3-2-6 0-8 2-2-2-5-4-8-2-5 4 0 10 8 17 8-7 13-13 8-17Z" />
+            </svg></button>
+        @if (!$p->stock)
+            <span class="sold-out-label">Sold out</span>
+        @elseif($p->tag)
+            <span class="card-tag">{{ $p->tag }}</span>
+        @endif
+        <a class="card-shop-link" href="{{ $p->url }}">
+            Choose your style ↗</a>
+    </div>
+    <div class="shop-card-info">
+        <div class="card-category">{{ $p->brand ?: $p->category }}</div><a class="card-name"
+            href="{{ $p->url }}">{{ $p->name }}</a>
+        <div class="card-price"><strong>₹{{ number_format($p->display_price) }}</strong>
+            @if ($p->old > $p->display_price)
+                <del>₹{{ number_format($p->old) }}</del><span>{{ round((1 - $p->display_price / $p->old) * 100) }}%
+                    off</span>
+            @endif
+        </div>
+        <div class="card-rating">
+            @if ($p->review_count)
+            <span>★ {{ $p->review_average }}</span><small>({{ $p->review_count }})</small>@else<small>New
+                    find</small>
+            @endif
+            <span
+                class="card-audience">{{ $p->audience === 'girls' ? 'Girls' : ($p->audience === 'both' ? 'Women & girls' : 'Women') }}</span>
+        </div>
+        <div class="product-offer-note" data-product-offer="{{ $p->id }}"></div>
+    </div>
+</article>

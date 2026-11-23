@@ -5,3 +5,11 @@
 /storage/framework/views/*
 /storage/framework/sessions/*
 /.runtime/
+
+/TEST-LOGINS.txt
+/storage/private/
+
+/storage/framework/cache/data/*
+!/storage/framework/cache/data/.gitkeep
+/bootstrap/cache/*
+!/bootstrap/cache/.gitkeep

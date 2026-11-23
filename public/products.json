@@ -1,1 +1,106 @@
-[{"id":1,"name":"The everyday floral kurta","category":"Ethnic","price":699,"old":1299,"color":"Rose garden","image":"photo-1610030469983-98e550d6193c","tag":"BESTSELLER","sizes":["XS","S","M","L","XL"],"stock":24,"rating":4.8},{"id":2,"name":"Soft days ribbed cardigan","category":"Western","price":899,"old":1599,"color":"Oat milk","image":"photo-1434389677669-e08b4cac3105","tag":"SOFT GIRL EDIT","sizes":["S","M","L","XL"],"stock":18,"rating":4.7},{"id":3,"name":"Little things shoulder bag","category":"Accessories","price":549,"old":999,"color":"Caramel","image":"photo-1548036328-c9fa89d128fa","tag":"UNDER ₹599","sizes":["One size"],"stock":30,"rating":4.6},{"id":4,"name":"Your new favourite sundress","category":"Western","price":1199,"old":1999,"color":"Sunshine","image":"photo-1515372039744-b8f02a3ae446","tag":"JUST DROPPED","sizes":["XS","S","M","L"],"stock":15,"rating":4.9},{"id":5,"name":"Glow ritual face serum","category":"Beauty","price":399,"old":699,"color":"30 ml • daily glow","image":"photo-1608248543803-ba4f8c70ae0b","tag":"SELF-CARE CLUB","sizes":["30 ml"],"stock":35,"rating":4.7},{"id":6,"name":"Golden hour layered necklace","category":"Jewellery","price":299,"old":599,"color":"Gold finish","image":"photo-1611652022419-a9419f74343d","tag":"LITTLE LUXURIES","sizes":["One size"],"stock":40,"rating":4.5},{"id":7,"name":"Sunday stroll sneakers","category":"Footwear","price":999,"old":1799,"color":"Cloud white","image":"photo-1549298916-b41d501d3772","tag":"EVERYDAY ESSENTIAL","sizes":["36","37","38","39","40"],"stock":22,"rating":4.6},{"id":8,"name":"The effortless co-ord set","category":"Western","price":1499,"old":2499,"color":"Warm neutral","image":"photo-1483985988355-763728e1935b","tag":"THE WEEKEND EDIT","sizes":["S","M","L","XL"],"stock":16,"rating":4.8}]
+[
+  {
+    "id": 1,
+    "name": "The everyday floral kurta",
+    "category": "Ethnic",
+    "price": 699,
+    "old": 1299,
+    "color": "Rose garden",
+    "image": "photo-1610030469983-98e550d6193c",
+    "tag": "BESTSELLER",
+    "sizes": ["XS", "S", "M", "L", "XL"],
+    "stock": 24,
+    "rating": 4.8
+  },
+  {
+    "id": 2,
+    "name": "Soft days ribbed cardigan",
+    "category": "Western",
+    "price": 899,
+    "old": 1599,
+    "color": "Oat milk",
+    "image": "photo-1434389677669-e08b4cac3105",
+    "tag": "SOFT GIRL EDIT",
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 18,
+    "rating": 4.7
+  },
+  {
+    "id": 3,
+    "name": "Little things shoulder bag",
+    "category": "Accessories",
+    "price": 549,
+    "old": 999,
+    "color": "Caramel",
+    "image": "photo-1548036328-c9fa89d128fa",
+    "tag": "UNDER ₹599",
+    "sizes": ["One size"],
+    "stock": 30,
+    "rating": 4.6
+  },
+  {
+    "id": 4,
+    "name": "Your new favourite sundress",
+    "category": "Western",
+    "price": 1199,
+    "old": 1999,
+    "color": "Sunshine",
+    "image": "photo-1515372039744-b8f02a3ae446",
+    "tag": "JUST DROPPED",
+    "sizes": ["XS", "S", "M", "L"],
+    "stock": 15,
+    "rating": 4.9
+  },
+  {
+    "id": 5,
+    "name": "Glow ritual face serum",
+    "category": "Beauty",
+    "price": 399,
+    "old": 699,
+    "color": "30 ml • daily glow",
+    "image": "photo-1608248543803-ba4f8c70ae0b",
+    "tag": "SELF-CARE CLUB",
+    "sizes": ["30 ml"],
+    "stock": 35,
+    "rating": 4.7
+  },
+  {
+    "id": 6,
+    "name": "Golden hour layered necklace",
+    "category": "Jewellery",
+    "price": 299,
+    "old": 599,
+    "color": "Gold finish",
+    "image": "photo-1611652022419-a9419f74343d",
+    "tag": "LITTLE LUXURIES",
+    "sizes": ["One size"],
+    "stock": 40,
+    "rating": 4.5
+  },
+  {
+    "id": 7,
+    "name": "Sunday stroll sneakers",
+    "category": "Footwear",
+    "price": 999,
+    "old": 1799,
+    "color": "Cloud white",
+    "image": "photo-1549298916-b41d501d3772",
+    "tag": "EVERYDAY ESSENTIAL",
+    "sizes": ["36", "37", "38", "39", "40"],
+    "stock": 22,
+    "rating": 4.6
+  },
+  {
+    "id": 8,
+    "name": "The effortless co-ord set",
+    "category": "Western",
+    "price": 1499,
+    "old": 2499,
+    "color": "Warm neutral",
+    "image": "photo-1483985988355-763728e1935b",
+    "tag": "THE WEEKEND EDIT",
+    "sizes": ["S", "M", "L", "XL"],
+    "stock": 16,
+    "rating": 4.8
+  }
+]

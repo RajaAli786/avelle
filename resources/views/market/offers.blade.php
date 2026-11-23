@@ -1,2 +1,40 @@
-@extends('layouts.market') @section('title','Offers & coupons · Avelle')
-@section('content')<div class="shell breadcrumbs"><a href="{{ url('/') }}">Home</a><span>/</span><span>Offers</span></div><section class="market-section shell"><div class="section-title"><div><span class="eyebrow">SAVINGS THAT FEEL GOOD</span><h1 class="page-title">A little extra to love.</h1><p class="muted">Use one eligible coupon or referral code per order. The final discount is verified at checkout.</p></div></div><div class="coupon-grid" id="offersPageGrid">@forelse($offers as $o)<article class="coupon-card {{ in_array($o['mode'],['pulse','both'])?'soft-pulse':'' }}"><div class="coupon-value">{{ $o['saving'] }}</div><h2>{{ $o['title'] }}</h2><p>{{ $o['scope_label'] }}</p><ul>@if($o['minimum'])<li>Minimum subtotal ₹{{ $o['minimum'] }}</li>@endif @if($o['maximum'])<li>Maximum savings ₹{{ $o['maximum'] }}</li>@endif @if($o['expires_at'])<li>Valid until {{ \Illuminate\Support\Carbon::parse($o['expires_at'])->format('d M Y, h:i A') }} IST</li>@endif</ul><button class="coupon-copy" data-copy-code="{{ $o['code'] }}">{{ $o['code'] }} <span>Copy code ⧉</span></button><a class="text-link" href="{{ url('/shop') }}">Shop the collection ↗</a></article>@empty<div class="empty-state"><h2>More good offers are on their way.</h2><p>Explore the current collection in the meantime.</p><a href="{{ url('/shop') }}" class="pink-button">Shop now ↗</a></div>@endforelse</div></section>@endsection
+@extends('layouts.market') @section('title', 'Offers & coupons · Avelle')
+@section('content')<div class="shell breadcrumbs">
+        <a href="{{ url('/') }}">Home</a><span>/</span><span>Offers</span>
+    </div>
+    <section class="market-section shell">
+        <div class="section-title">
+            <div><span class="eyebrow">SAVINGS THAT FEEL GOOD</span>
+                <h1 class="page-title">A little extra to love.</h1>
+                <p class="muted">Use one eligible coupon or referral code per order. The final discount is verified at
+                    checkout.</p>
+            </div>
+        </div>
+        <div class="coupon-grid" id="offersPageGrid">
+            @forelse($offers as $o)
+                <article class="coupon-card {{ in_array($o['mode'], ['pulse', 'both']) ? 'soft-pulse' : '' }}">
+                    <div class="coupon-value">{{ $o['saving'] }}</div>
+                    <h2>{{ $o['title'] }}</h2>
+                    <p>{{ $o['scope_label'] }}</p>
+                    <ul>
+                        @if ($o['minimum'])
+                            <li>{{ $o['seller_id'] ?? null ? 'Eligible seller subtotal' : 'Minimum subtotal' }}
+                                ₹{{ $o['minimum'] }}</li>
+                            @endif @if ($o['maximum'])
+                                <li>Maximum savings ₹{{ $o['maximum'] }}</li>
+                                @endif @if ($o['expires_at'])
+                                    <li>Valid until
+                                        {{ \Illuminate\Support\Carbon::parse($o['expires_at'])->format('d M Y, h:i A') }}
+                                        IST</li>
+                                @endif
+                    </ul>
+                    <button class="coupon-copy" data-copy-code="{{ $o['code'] }}">{{ $o['code'] }} <span>Copy code
+                            ⧉</span></button><a class="text-link" href="{{ url('/shop') }}">Shop the collection ↗</a>
+            </article>@empty<div class="empty-state">
+                    <h2>More good offers are on their way.</h2>
+                    <p>Explore the current collection in the meantime.</p><a href="{{ url('/shop') }}"
+                        class="pink-button">Shop now ↗</a>
+                </div>
+            @endforelse
+        </div>
+</section>@endsection
