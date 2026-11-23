@@ -5,8 +5,9 @@
             <p>Approve businesses and review their products. Account disable controls remain in Users & customers.</p>
         </div><a class="btn btn-light" href="{{ url('/seller/apply') }}" target="_blank">Open seller application</a>
     </div>
-    @forelse($sellers as $s)
-    <details class="editor-card" data-search-row>
+    <div data-admin-list="sellers"></div>
+@forelse($sellers as $s)
+    <details class="editor-card" id="seller-{{ $s->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'sellers', 'title' => $s->shop_name, 'shop' => $s->shop_name, 'owner' => $s->owner_name, 'email' => $s->owner_email, 'commission' => $s->commission_rate.'%', 'status' => ucfirst($s->status)]) }}'>
         <summary class="editor-summary">{{ $s->shop_name }} · {{ $s->status }} · {{ $s->commission_rate }}%
             commission</summary>
         <p>{{ $s->owner_name }} · {{ $s->owner_email }} · {{ $s->phone }} · User
@@ -29,8 +30,9 @@
     @endforelse
     <h2 class="mt-4">
         Seller product approval</h2>
-    @forelse($sellerProducts as $p)
-    <details class="editor-card" data-search-row>
+    <div data-admin-list="sellerProducts"></div>
+@forelse($sellerProducts as $p)
+    <details class="editor-card" id="seller-product-{{ $p->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'sellerProducts', 'title' => $p->name, 'name' => $p->name, 'shop' => $p->shop_name, 'category' => $p->category, 'price' => '₹'.number_format($p->price), 'status' => ucfirst($p->seller_status)]) }}'>
         <summary class="editor-summary">{{ $p->shop_name }} · {{ $p->name }} · {{ $p->seller_status }}
         </summary>
         <p>Product #{{ $p->id }} · ₹{{ $p->price }} · {{ $p->category }}</p>
@@ -60,8 +62,9 @@
     <p>Latest 200 shipment records. Commission is captured when the order is placed. Shipping fees belong to the
         platform and are not included in seller earnings. Record external payouts only after delivery, collected payment
         and the return window. Orders with returns require separate reconciliation.</p>
-    @forelse($sellerShipments as $shipment)
-    <details class="editor-card" data-search-row>
+    <div data-admin-list="shipments"></div>
+@forelse($sellerShipments as $shipment)
+    <details class="editor-card" id="shipment-{{ $shipment->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'shipments', 'title' => 'Shipment #'.$shipment->id, 'shipment' => '#'.$shipment->id, 'order' => \App\Support\OrderDisplay::reference((object)['id'=>$shipment->order_id]), 'shop' => $shipment->shop_name ?? 'Avelle', 'amount' => '₹'.number_format($shipment->seller_amount), 'status' => ucfirst($shipment->status), 'payout' => $shipment->settled_at ? 'Recorded' : 'Pending']) }}'>
         <summary class="editor-summary">{{ $shipment->reference }} · {{ $shipment->shop_name ?? 'Avelle store' }} ·
             Shipment #{{ $shipment->id }} · {{ $shipment->status }}</summary>
         @foreach (json_decode($shipment->items) as $line)

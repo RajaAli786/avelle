@@ -144,7 +144,12 @@ class StoreController
     {
         $r = $request;
         if (!\Illuminate\Support\Facades\Auth::check()) {
-            $r->merge(["email" => strtolower(trim($r->email ?? ""))]);
+            $target = url('/checkout');
+            $r->session()->put('url.intended', $target);
+            return response()->json([
+                'message' => 'Please sign in or create an account to place your order.',
+                'login_url' => url('/account/login') . '?return_to=' . rawurlencode($target),
+            ], 401);
         }
         $rules = array_merge($this->rules(), [
             "name" => "required|string|max:100",
@@ -155,21 +160,17 @@ class StoreController
             "pincode" => ["required", 'regex:/^[1-9][0-9]{5}$/'],
             "state" => "nullable|string|max:100",
             "checkout_key" => "nullable|uuid",
+            "saved_address_id" => "nullable|integer|min:1",
+            "address_label" => "nullable|string|max:30",
         ]);
-        if (!\Illuminate\Support\Facades\Auth::check()) {
-            $rules["email"] .= "|unique:users,email";
-            $rules["password"] = ["required", "confirmed", \Illuminate\Validation\Rules\Password::min(10)];
-        } else {
-            $r->merge(["email" => \Illuminate\Support\Facades\Auth::user()->email]);
-        }
+        $r->merge(["email" => \Illuminate\Support\Facades\Auth::user()->email]);
         $data = $r->validate($rules);
-        $newUser = null;
         if (!\App\Support\Shop::settings()["cod_enabled"]) {
             throw \Illuminate\Validation\ValidationException::withMessages([
                 "payment" => "Cash on delivery is currently unavailable.",
             ]);
         }
-        $result = DB::transaction(function () use ($data, &$newUser) {
+        $result = DB::transaction(function () use ($data) {
             $user = \Illuminate\Support\Facades\Auth::user();
             if ($user && !empty($data["checkout_key"])) {
                 $existing = DB::table("orders")
@@ -186,13 +187,16 @@ class StoreController
                 }
             }
             [$items, $subtotal, $requested] = $this->cart($data, true);
-            if (!$user) {
-                $newUser = $user = \App\Models\User::create(
-                    collect($data)
-                        ->only(["name", "email", "password", "phone", "address", "city", "pincode"])
-                        ->all(),
-                );
-            }
+            \App\Support\AddressBook::save($user->id, [
+                'id' => $data['saved_address_id'] ?? null,
+                'label' => $data['address_label'] ?? 'Home',
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'address' => $data['address'],
+                'city' => $data['city'],
+                'state' => $data['state'] ?? '',
+                'pincode' => $data['pincode'],
+            ]);
             [$discount, $promo] = $this->discount(
                 $data["code"] ?? null,
                 $items,
@@ -240,24 +244,16 @@ class StoreController
                 "updated_at" => now(),
             ]);
             DB::table("carts")->where("user_id", $user->id)->delete();
-            DB::afterCommit(function () use ($ref, $newUser) {
-                if ($newUser) {
-                    \App\Support\StoreMail::welcome($newUser);
-                }
+            DB::afterCommit(function () use ($ref) {
                 \App\Support\StoreMail::order($ref);
             });
             return [
                 "reference" => $ref,
                 "total" => $total,
                 "message" => "Order placed. Pay on delivery.",
-                "account_created" => (bool) $newUser,
+                "account_created" => false,
             ];
         });
-        if ($newUser) {
-            \Illuminate\Support\Facades\Auth::login($newUser);
-            $r->session()->regenerate();
-            $r->session()->put("auth_version", $newUser->auth_version);
-        }
         $result["csrf_token"] = csrf_token();
         $result["account"] = \Illuminate\Support\Facades\Auth::user()->only([
             "name",

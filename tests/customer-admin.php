@@ -255,6 +255,7 @@ try {
     $pd = (new MarketplaceController())
         ->product(DB::table("products")->where("id", $a)->value("slug"))
         ->render();
+    $pd = preg_replace('/\s+/u', ' ', $pd);
     check(
         str_contains($pd, "Reviews open after delivery.") &&
             !str_contains($pd, "Write your verified-purchase review"),

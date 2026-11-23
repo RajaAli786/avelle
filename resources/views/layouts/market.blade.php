@@ -34,7 +34,7 @@ $pageProducts = isset($product)
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('market.css') }}?v=10">@stack('head')
+    <link rel="stylesheet" href="{{ asset('market.css') }}?v=11">@stack('head')
 </head>
 
 <body>
@@ -58,7 +58,7 @@ $pageProducts = isset($product)
                         stroke="currentColor" stroke-width="1.6" aria-hidden="true">
                         <circle cx="12" cy="7" r="4" />
                         <path d="M4 22v-3a8 8 0 0 1 16 0v3" />
-                    </svg><span>{{ auth()->check() ? 'My account' : 'Sign in' }}</span></a><a
+                    </svg><span>{{ auth()->check() ? (preg_split('/\s+/u', trim(auth()->user()->name))[0] ?: 'My account') : 'Sign in' }}</span></a><a
                     href="{{ url('/wishlist') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="1.6" aria-hidden="true">
                         <path d="M20 4c-3-2-6 0-8 2-2-2-5-4-8-2-5 4 0 10 8 17 8-7 13-13 8-17Z" />
@@ -146,7 +146,7 @@ $pageProducts = isset($product)
     <script type="application/json" id="pageProducts">
         @json($pageProducts)
     </script>
-    <script src="{{ asset('market.js') }}?v=8"></script>@stack('scripts')
+    <script src="{{ asset('market.js') }}?v=9"></script><script src="{{ asset('auth-return.js') }}?v=1"></script>@stack('scripts')
 </body>
 
 </html>

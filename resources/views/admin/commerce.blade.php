@@ -13,8 +13,9 @@
             </select>
         </label><button class="btn btn-primary">Apply filter</button><a href="{{ url('/admin') }}#reviews"
             class="btn btn-light">Reset</a><small>Latest 100 matching reviews</small></form>
-    @forelse($reviewQueue as $r)
-    <article class="editor-card admin-review-card" data-search-row>
+    <div data-admin-list="reviews"></div>
+@forelse($reviewQueue as $r)
+    <article class="editor-card admin-review-card" id="review-{{ $r->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'reviews', 'title' => $r->product, 'product' => $r->product, 'customer' => $r->customer, 'rating' => $r->rating.' / 5', 'status' => ucfirst($r->status), 'date' => date('d M Y', strtotime($r->created_at))]) }}'>
         <div class="admin-review-heading">
             <div><span
                     class="admin-review-stars">{{ str_repeat('★', $r->rating) }}{{ str_repeat('☆', 5 - $r->rating) }}</span>
@@ -46,8 +47,9 @@
 <section class="admin-page" id="returns">
     <h2>Return requests</h2>
     <p>Approve, receive and record refunds. Refunds must be processed separately before entering their reference.</p>
-    @forelse($returnQueue as $r)
-    <details class="editor-card" data-search-row>
+    <div data-admin-list="returns"></div>
+@forelse($returnQueue as $r)
+    <details class="editor-card" id="return-{{ $r->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'returns', 'title' => 'Return #'.$r->id, 'order' => \App\Support\OrderDisplay::reference((object)['id'=>$r->order_id]), 'customer' => $r->customer, 'reason' => $r->reason, 'refund' => '₹'.number_format($r->refund_amount), 'status' => ucfirst($r->status)]) }}'>
         <summary>{{ $r->reference }} · {{ $r->customer }} · {{ $r->status }}</summary>
         <p>{{ $r->reason }} — {{ $r->notes }}</p>
         @foreach (json_decode($r->items) as $line)
@@ -77,8 +79,9 @@
 </section>
 <section class="admin-page" id="pages">
     <h2>Store content pages</h2>
-    @foreach ($contentPages as $page)
-    <details class="editor-card" data-search-row>
+    <div data-admin-list="pages"></div>
+@foreach ($contentPages as $page)
+    <details class="editor-card" id="content-page-{{ $page->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'pages', 'title' => $page->title, 'title' => $page->title, 'slug' => '/pages/'.$page->slug, 'status' => $page->active ? 'Published' : 'Hidden']) }}'>
         <summary>{{ $page->title }}</summary>
         <form method="POST" action="{{ url('/admin/pages/' . $page->id) }}">@csrf<label
                 class="d-block my-3">Title<input class="form-control" name="title" value="{{ $page->title }}"
@@ -93,8 +96,9 @@
 </section>
 <section class="admin-page" id="support">
     <h2>Support requests</h2>
-    @forelse($inquiries as $i)
-    <div class="editor-card" data-search-row>
+    <div data-admin-list="support"></div>
+@forelse($inquiries as $i)
+    <div class="editor-card" id="inquiry-{{ $i->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'support', 'title' => $i->subject, 'subject' => $i->subject, 'customer' => $i->name, 'email' => $i->email, 'status' => ucfirst($i->status), 'date' => date('d M Y', strtotime($i->created_at))]) }}'>
         <h3>#{{ $i->id }} · {{ $i->subject }}</h3>
         <p>{{ $i->name }} · {{ $i->email }} · {{ $i->created_at }}</p>
         <p style="white-space:pre-wrap">{{ $i->message }}</p>

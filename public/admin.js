@@ -27,6 +27,7 @@ function showPage() {
   document.getElementById("adminBreadcrumb").textContent = pages[active];
   document.getElementById("adminSearch").value = "";
   document.querySelectorAll("[data-search-row]").forEach((r) => (r.hidden = false));
+  document.dispatchEvent(new CustomEvent("avelle:admin-page", { detail: { active } }));
 }
 window.addEventListener("hashchange", showPage);
 showPage();
@@ -53,6 +54,10 @@ document.addEventListener("click", (e) => {
 });
 document.getElementById("adminSearch")?.addEventListener("input", (e) => {
   const q = e.target.value.toLowerCase().trim();
+  if (window.avelleAdminTables) {
+    window.avelleAdminTables.filter(document.querySelector(".admin-page.is-active")?.id, q);
+    return;
+  }
   document
     .querySelectorAll(".admin-page.is-active [data-search-row]")
     .forEach((row) => (row.hidden = !row.textContent.toLowerCase().includes(q)));

@@ -5,8 +5,9 @@
             <p>Create categories and subcategories with multiple images.</p>
         </div><button class="btn btn-primary" data-open-editor="category-new">+ Add category</button>
     </div>
-    @foreach ($catalogCategories->concat([null]) as $c)
-        <details class="editor-card" id="category-{{ $c?->id ?? 'new' }}" data-search-row>
+    <div data-admin-list="categories"></div>
+@foreach ($catalogCategories->concat([null]) as $c)
+        <details class="editor-card" id="category-{{ $c?->id ?? 'new' }}" data-search-row data-admin-record='{{ json_encode(['group' => 'categories', 'title' => $c?->name ?? 'Add category', 'create' => !$c, 'name' => $c?->name, 'parent' => $catalogCategories->firstWhere('id', $c?->parent_id)?->name ?? 'Top level', 'images' => $c ? ($categoryImages[$c->id] ?? collect())->count() : 0, 'status' => $c?->active ? 'Published' : 'Hidden']) }}'>
             <summary class="editor-summary">{{ $c?->name ?? '+ Add category' }}{{ $c && !$c->active ? ' · Hidden' : '' }}
             </summary>
             <form method="POST" enctype="multipart/form-data" action="{{ url('/admin/categories') }}">@csrf<input

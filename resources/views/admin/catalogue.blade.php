@@ -6,8 +6,9 @@
             <p>Descriptions, specifications, galleries and size / colour inventory.</p>
         </div><button class="btn btn-primary" data-open-editor="product-new">+ Add product</button>
     </div>
-    @foreach ($products->concat([null]) as $p)
-    <details class="editor-card" id="product-{{ $p?->id ?? 'new' }}" data-search-row>
+    <div data-admin-list="products"></div>
+@foreach ($products->concat([null]) as $p)
+    <details class="editor-card" id="product-{{ $p?->id ?? 'new' }}" data-search-row data-admin-record='{{ json_encode(['group' => 'products', 'title' => $p?->name ?? 'Add product', 'create' => !$p, 'name' => $p?->name, 'category' => $p?->category, 'price' => $p ? '₹'.number_format($p->price) : '', 'stock' => $p?->stock, 'status' => $p ? ($p->seller_status !== 'approved' ? ucfirst($p->seller_status) : ($p->active ? 'Published' : 'Hidden')) : '']) }}'>
         <summary class="editor-summary">
             {{ $p ? '#' . $p->id . ' · ' . $p->name . ' · ₹' . $p->price . ' · Stock ' . $p->stock : '+ Add a product' }}
         </summary>

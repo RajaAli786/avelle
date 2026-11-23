@@ -4638,3 +4638,11 @@ label select {
     font-size: 17px;
   }
 }
+
+.market-actions > a:first-child > span {
+  display: block;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

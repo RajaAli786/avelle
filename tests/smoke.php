@@ -153,12 +153,15 @@ try {
     ];
     Auth::logout();
     $before = DB::table("products")->where("id", $a)->value("stock");
-    $order = $c->checkout(req($payload))->getData(true);
+    $blocked = $c->checkout(req($payload));
+    check($blocked->getStatusCode() === 401, "Checkout requires an authenticated account");
+    $account->register(req($payload));
     $owner = Auth::user();
+    $order = $c->checkout(req($payload))->getData(true);
     check($order["total"] === 1448, "Checkout recalculates prices and totals on server");
     check(
-        $order["account_created"] && $owner?->email === $payload["email"],
-        "First checkout creates a customer profile and logs in",
+        !$order["account_created"] && $owner?->email === $payload["email"],
+        "Registration signs in before checkout and checkout uses the same profile",
     );
     check(
         $owner->role === "customer" &&
@@ -195,7 +198,7 @@ try {
     );
     denied(fn() => $admin->product(req([])), "Customer cannot access admin product mutation");
     Auth::logout();
-    rejects(fn() => $c->checkout(req($payload)), "Guest cannot claim an existing customer email");
+    rejects(fn() => $account->register(req($payload)), "Registration cannot claim an existing customer email");
     $registration = [
         "name" => "QA Registered",
         "email" => "qa-register@example.test",

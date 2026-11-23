@@ -13,10 +13,15 @@ class AccountController
 {
     public function form(Request $r, string $mode = "login")
     {
+        \App\Support\AuthReturn::remember($r);
         if (Auth::check()) {
-            return redirect(url("/account"));
+            return \App\Support\AuthReturn::finish($r);
         }
-        return view("auth", ["mode" => $mode, "checkout" => $r->boolean("checkout")]);
+        return view("auth", [
+            "mode" => $mode,
+            "checkout" => $r->boolean("checkout"),
+            "returnTarget" => $r->session()->get('url.intended', ''),
+        ]);
     }
     public function registerForm(Request $r)
     {
@@ -24,6 +29,7 @@ class AccountController
     }
     public function register(Request $r)
     {
+        \App\Support\AuthReturn::remember($r);
         $r->merge(["email" => strtolower(trim($r->email ?? ""))]);
         $d = $r->validate([
             "name" => "required|string|max:100",
@@ -40,10 +46,11 @@ class AccountController
         Auth::login($user);
         $r->session()->regenerate();
         $r->session()->put("auth_version", Auth::user()->auth_version);
-        return redirect($r->boolean("checkout") ? url("/checkout") : url("/account"));
+        return \App\Support\AuthReturn::finish($r);
     }
     public function login(Request $r)
     {
+        \App\Support\AuthReturn::remember($r);
         $r->merge(["email" => strtolower(trim($r->email ?? ""))]);
         $d = $r->validate(["email" => "required|email", "password" => "required|string"]);
         if (!Auth::attempt($d + ["is_active" => true])) {
@@ -53,7 +60,7 @@ class AccountController
         }
         $r->session()->regenerate();
         $r->session()->put("auth_version", Auth::user()->auth_version);
-        return redirect($r->boolean("checkout") ? url("/checkout") : url("/account"));
+        return \App\Support\AuthReturn::finish($r);
     }
     public function logout(Request $r)
     {
@@ -65,7 +72,7 @@ class AccountController
     public function index(Request $r)
     {
         if (!Auth::check()) {
-            return redirect(url("/account/login"));
+            return \App\Support\AuthReturn::login($r);
         }
         $section = last(explode("/", $r->path()));
         if (!in_array($section, ["orders", "addresses", "profile", "security", "reviews", "returns"])) {
@@ -86,11 +93,14 @@ class AccountController
                     : $query->where("status", $filters["status"]);
             }
             if (!empty($filters["q"])) {
-                $query->where(
-                    fn($q) => $q
-                        ->where("reference", "like", "%" . $filters["q"] . "%")
-                        ->orWhere("items", "like", "%" . $filters["q"] . "%"),
-                );
+                $query->where(function ($query) use ($filters) {
+                    $query->where("reference", "like", "%" . $filters["q"] . "%")
+                        ->orWhere("items", "like", "%" . $filters["q"] . "%");
+                    $id = \App\Support\OrderDisplay::referenceId($filters["q"]);
+                    if ($id !== null) {
+                        $query->orWhere('id', $id);
+                    }
+                });
             }
         }
         $stats = [

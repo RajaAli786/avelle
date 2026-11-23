@@ -1,6 +1,9 @@
-@extends('layouts.market') @section('title', 'Order ' . strtoupper(substr($order->reference, 0, 8)) . ' · Avelle')
+@extends('layouts.market') @section('title', 'Order ' . \App\Support\OrderDisplay::reference($order) . ' · Avelle')
+@push('head')
+    <link rel="stylesheet" href="{{ asset('order-details.css') }}?v=1">
+@endpush
 @section('content') @if (isset($shipments) && $shipments->count())
-    <section class="shell market-section">
+    <section class="shell market-section order-shipments">
         <h2>Your shipments</h2>
         <p>Items from different sellers are fulfilled separately. The main order status follows the least-progressed
             active shipment.</p>
@@ -22,7 +25,7 @@
 @endif
 <div class="shell breadcrumbs"><a href="{{ url('/') }}">Home</a><span>/</span><a
         href="{{ url('/account/orders') }}">My
-        orders</a><span>/</span><span>{{ strtoupper(substr($order->reference, 0, 8)) }}</span></div>
+        orders</a><span>/</span><span>{{ \App\Support\OrderDisplay::reference($order) }}</span></div>
 <section class="shell order-page">
     @if (request('new'))
         <div class="order-confirmation"><span>✓</span>
@@ -34,7 +37,7 @@
     @endif
     <div class="section-title">
         <div><span class="eyebrow">YOUR AVELLE ORDER</span>
-            <h1 class="page-title">#{{ strtoupper(substr($order->reference, 0, 8)) }}</h1>
+            <h1 class="page-title">#{{ \App\Support\OrderDisplay::reference($order) }}</h1>
             <p class="muted">Placed {{ date('d M Y, h:i A', strtotime($order->created_at)) }} IST</p>
         </div><a class="outline-button" href="{{ url('/account/orders/' . $order->reference . '/receipt') }}"
             target="_blank" rel="noopener">Order receipt ↗</a>
@@ -65,9 +68,10 @@
         <div>
             <section class="form-card">
                 <h2>Items in this order</h2>
-                @foreach (json_decode($order->items, true) as $i)
+                @foreach (($orderItems ?? \App\Support\OrderDisplay::items($order)) as $i)
                     <div class="ordered-item">
-                        <div><b>{{ $i['name'] }}</b>
+                        <img class="ordered-item-image" src="{{ $i['image_url'] }}" alt="{{ $i['name'] }}" width="88" height="112">
+                        <div class="ordered-item-details"><b>{{ $i['name'] }}</b>
                             <p>{{ $i['size'] }} @if (!empty($i['color']))
                                     · {{ $i['color'] }}
                                 @endif · Qty {{ $i['quantity'] }}</p>
@@ -156,7 +160,7 @@
                     </div>
                 </dl>
                 <p class="muted">Cash on delivery · Payment {{ $order->payment_status }}</p><small>Reference:
-                    {{ $order->reference }}</small>
+                    {{ \App\Support\OrderDisplay::reference($order) }}</small>
             </section>
             <section class="form-card">
                 <h2>Order activity</h2>

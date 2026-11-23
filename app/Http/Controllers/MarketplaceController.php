@@ -170,6 +170,10 @@ class MarketplaceController
     }
     public function checkout()
     {
+        if (!Auth::check()) {
+            $target = request()->is('checkout') ? request()->fullUrl() : url('/checkout');
+            return \App\Support\AuthReturn::login(request(), $target);
+        }
         return view("market.checkout", [
             "addresses" => Auth::check()
                 ? DB::table("addresses")->where("user_id", Auth::id())->orderByDesc("is_default")->get()

@@ -86,44 +86,10 @@ class ShoppingController
             "pincode" => ["required", 'regex:/^[1-9][0-9]{5}$/'],
             "is_default" => "nullable|boolean",
         ]);
-        $id = $d["id"] ?? null;
-        unset($d["id"]);
-        if ($id) {
-            abort_unless(
-                DB::table("addresses")->where("id", $id)->where("user_id", Auth::id())->exists(),
-                404,
-            );
+        $address = \App\Support\AddressBook::save(Auth::id(), $d);
+        if ($r->expectsJson()) {
+            return response()->json(['message' => 'Address saved.', 'address' => $address]);
         }
-        DB::transaction(function () use ($r, $d, $id) {
-            $current = $id
-                ? DB::table("addresses")
-                ->where("id", $id)
-                ->where("user_id", Auth::id())
-                ->lockForUpdate()
-                ->first()
-                : null;
-            $first = !DB::table("addresses")->where("user_id", Auth::id())->exists();
-            $default =
-                $first ||
-                $r->boolean("is_default") ||
-                ($current?->is_default &&
-                    !DB::table("addresses")
-                        ->where("user_id", Auth::id())
-                        ->where("id", "!=", $id)
-                        ->where("is_default", true)
-                        ->exists());
-            if ($default) {
-                DB::table("addresses")
-                    ->where("user_id", Auth::id())
-                    ->update(["is_default" => false]);
-            }
-            $values = array_merge($d, ["is_default" => $default, "updated_at" => now()]);
-            if ($id) {
-                DB::table("addresses")->where("id", $id)->where("user_id", Auth::id())->update($values);
-            } else {
-                DB::table("addresses")->insert($values + ["user_id" => Auth::id(), "created_at" => now()]);
-            }
-        });
         return back()->with("success", "Address saved.");
     }
     public function deleteAddress(int $id)

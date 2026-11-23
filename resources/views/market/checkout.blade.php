@@ -1,51 +1,51 @@
 @extends('layouts.market') @section('title', 'Checkout · Avelle')
+@push('head')
+<link rel="stylesheet" href="{{ asset('checkout-address.css') }}?v=2">
+@endpush
+@php($selectedAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first())
 @section('content')<section class="shell checkout-page">
         <div class="checkout-progress"><a href="{{ url('/cart') }}">01 Bag</a><span>────</span><b class="active">02 Address &
                 checkout</b><span>────</span><b>03 Your order</b></div>
         <h1 class="page-title">Make it yours.</h1>
         <div class="checkout-layout">
             <div>
-                @if (!auth()->check())
-                    <div class="checkout-signin">Already have an account? <a
-                            href="{{ url('/account/login') }}?checkout=1">Sign in before checkout →</a></div>
-                    @endif @if ($addresses->count())
-                        <section class="form-card">
-                            <h2>Saved delivery addresses</h2>
-                            <div class="address-choice">
+                    @auth
+                        <section class="form-card saved-address-panel">
+                            <div class="saved-address-heading"><h2>Choose a delivery address</h2><button type="button" class="outline-button" data-new-address>+ Add new address</button></div>
+                            <div class="address-choice" id="checkoutAddressChoices">
                                 @foreach ($addresses as $a)
-                                    <button data-fill-address="{{ $a->id }}"><b>{{ $a->label }} ·
-                                            {{ $a->name }}</b><span>{{ $a->address }}, {{ $a->city }}
-                                            {{ $a->pincode }}</span></button>
+                                    <label class="checkout-address-card" data-address-card="{{ $a->id }}">
+                                        <input type="radio" name="delivery_address_choice" value="{{ $a->id }}" @checked($selectedAddress?->id === $a->id)>
+                                        <span class="checkout-address-text"><b>{{ $a->label }} · {{ $a->name }}</b><span>{{ $a->address }}, {{ $a->city }}, {{ $a->state }} {{ $a->pincode }}</span><small>{{ $a->phone }}</small></span>
+                                        <button type="button" data-edit-address="{{ $a->id }}">Edit</button>
+                                        <button type="button" class="deliver-address-button" data-deliver-address="{{ $a->id }}">Deliver to this address</button>
+                                    </label>
                                 @endforeach
                             </div>
+                            <p id="addressSaveStatus" role="status" class="muted"></p>
                         </section>
-                    @endif
+                    @endauth
                     <form id="checkoutForm" class="form-card">
                         <h2>Delivery details</h2>
+                        <input type="hidden" name="saved_address_id" value="{{ $selectedAddress?->id }}">
+                        <input type="hidden" name="address_label" value="{{ $selectedAddress?->label ?? 'Home' }}">
+                        <p class="muted">Your delivery address is saved for your next order.</p>
                         <div class="two-fields"><label>Full name<input name="name" required maxlength="100"
-                                    autocomplete="name" value="{{ auth()->user()?->name }}"></label><label>Mobile
+                                    autocomplete="name" value="{{ $selectedAddress?->name ?? auth()->user()?->name }}"></label><label>Mobile
                                 number<input name="phone" required pattern="[6-9][0-9]{9}"
                                     title="10-digit Indian mobile number" autocomplete="tel"
-                                    value="{{ auth()->user()?->phone }}"></label></div><label>Email address<input
+                                    value="{{ $selectedAddress?->phone ?? auth()->user()?->phone }}"></label></div><label>Email address<input
                                 name="email" type="email" required maxlength="200" autocomplete="email"
                                 value="{{ auth()->user()?->email }}" @auth readonly @endauth></label><label>House / street
                             / area
-                            <textarea name="address" required maxlength="500" autocomplete="street-address">{{ auth()->user()?->address }}</textarea>
+                            <textarea name="address" required maxlength="500" autocomplete="street-address">{{ $selectedAddress?->address ?? auth()->user()?->address }}</textarea>
                         </label>
                         <div class="two-fields"><label>City<input name="city" required maxlength="100"
                                     autocomplete="address-level2"
-                                    value="{{ auth()->user()?->city }}"></label><label>State<input name="state" required
+                                    value="{{ $selectedAddress?->city ?? auth()->user()?->city }}"></label><label>State<input name="state" value="{{ $selectedAddress?->state }}" required
                                     maxlength="100" autocomplete="address-level1"></label></div><label>PIN code<input
                                 name="pincode" required pattern="[1-9][0-9]{5}" title="6-digit Indian PIN code"
-                                autocomplete="postal-code" value="{{ auth()->user()?->pincode }}"></label>
-                        @guest<div class="checkout-account-fields">
-                                <h3>Create your Avelle profile</h3>
-                                <p>Your order and delivery details will be saved in your own account.</p>
-                                <div class="two-fields"><label>Create password<input name="password" type="password"
-                                            minlength="10" required autocomplete="new-password"><small>Minimum 10
-                                            characters</small></label><label>Confirm password<input name="password_confirmation"
-                                            type="password" minlength="10" required autocomplete="new-password"></label></div>
-                        </div>@endguest
+                                autocomplete="postal-code" value="{{ $selectedAddress?->pincode ?? auth()->user()?->pincode }}"></label>
                         <div class="payment-choice"><span>◉</span>
                             <div><b>Cash on delivery</b>
                                 <p>Pay when your order arrives.</p>
@@ -66,4 +66,6 @@
             </aside>
         </div>
     </section>
-<script id="savedAddresses" type="application/json">@json($addresses)</script>@endsection
+@auth @include('market.checkout-address-editor') @endauth
+@push('scripts')<script src="{{ asset('checkout-address.js') }}?v=2"></script>@endpush
+<script id="savedAddresses"  type="application/json">@json($addresses)</script>@endsection

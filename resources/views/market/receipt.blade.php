@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Order receipt {{ strtoupper(substr($order->reference, 0, 8)) }} · Avelle</title>
+    <title>Order receipt {{ \App\Support\OrderDisplay::reference($order) }} · Avelle</title>
     <style>
         body {
             font: 14px Arial, sans-serif;
@@ -154,7 +154,7 @@
                 <small>
                     Order receipt — not a tax invoice</small>
             </div>
-            <div><strong>#{{ strtoupper(substr($order->reference, 0, 8)) }}</strong>
+            <div><strong>#{{ \App\Support\OrderDisplay::reference($order) }}</strong>
                 <p>{{ date('d M Y', strtotime($order->created_at)) }}<br>{{ ucfirst($order->status) }}<br>Cash on
                     delivery · {{ $order->payment_status }}</p><button onclick="window.print()">Print / save
                     receipt</button>
@@ -201,7 +201,7 @@
                 <dd>₹{{ $order->total }}</dd>
             </div>
         </dl>
-        <footer>Order reference: {{ $order->reference }}<br>
+        <footer>Order reference: {{ \App\Support\OrderDisplay::reference($order) }}<br>
             @if ($settings['support_email'])
                 Support: {{ $settings['support_email'] }}
             @endif

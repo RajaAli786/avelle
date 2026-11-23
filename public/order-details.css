@@ -1,0 +1,40 @@
+.order-page { padding-bottom: 56px; color: #292534; }
+.order-page .page-title { font-size: 30px; }
+.order-page .eyebrow { color: #955075; font-size: 12px; }
+.order-page .muted, .order-shipments p { font-size: 14px; line-height: 1.7; color: #62596c; }
+.order-page .form-card, .order-page .order-summary { border: 1px solid #e5e1e9; border-radius: 14px; padding: 25px; box-shadow: 0 3px 18px #35233d05; }
+.order-page h2, .order-shipments h2 { font-size: 20px; line-height: 1.4; color: #292534; margin: 0 0 20px; }
+.order-page .form-card > p, .order-page .form-card > p a { color: #544b5e; font-size: 15px; line-height: 1.85; }
+.order-page .order-tracker { padding: 24px; border-radius: 14px; background: #fcf9fc; }
+.order-page .order-tracker > div { font-size: 14px; color: #685d73; }
+.order-page .order-tracker > div.complete { color: #28765d; }
+.order-page .ordered-item { display: flex; align-items: flex-start; gap: 18px; padding: 22px 0; font-size: 16px; }
+.order-page .ordered-item-image { width: 88px; height: 112px; object-fit: cover; border-radius: 9px; background: #f5f1f5; flex-shrink: 0; }
+.order-page .ordered-item-details { flex: 1; min-width: 0; }
+.order-page .ordered-item b { font-size: 16px; line-height: 1.6; color: #302736; }
+.order-page .ordered-item p { color: #62586b; font-size: 14px; line-height: 1.7; margin: 8px 0; }
+.order-page .ordered-item small { color: #706577; font-size: 12px; }
+.order-page .ordered-item strong { font-size: 16px; color: #302736; white-space: nowrap; }
+.order-page .order-summary dl > div { font-size: 15px; line-height: 1.65; }
+.order-page .order-summary dt { color: #62586b; }
+.order-page .order-summary dd { color: #3c3345; }
+.order-page .order-summary .summary-total { font-size: 19px; }
+.order-page .order-summary .summary-total dt, .order-page .order-summary .summary-total dd { color: #302736; font-weight: 700; }
+.order-page .order-summary > small { display: block; overflow-wrap: anywhere; color: #706577; font-size: 12px; line-height: 1.7; }
+.order-page .order-events b { color: #4b3859; font-size: 15px; }
+.order-page .order-events small { color: #706577; font-size: 12px; line-height: 1.7; margin: 5px 0; display: block; }
+.order-page .order-events p { font-size: 14px; line-height: 1.7; color: #62586b; }
+.order-page .outline-button, .order-page .pink-button, .order-page .text-link, .order-page label { font-size: 14px; }
+.order-page .return-line { font-size: 14px; gap: 12px; }
+.order-page .shipment-info b { font-size: 16px; }
+.order-page .shipment-info p { font-size: 14px; color: #62586b; }
+.order-shipments summary { font-size: 15px; color: #44364f; cursor: pointer; }
+@media(max-width:600px) {
+    .order-page .form-card, .order-page .order-summary { padding: 20px; }
+    .order-page .ordered-item { gap: 12px; flex-wrap: wrap; }
+    .order-page .ordered-item-image { width: 72px; height: 94px; }
+    .order-page .ordered-item strong { margin-left: 84px; width: 100%; }
+    .order-page .order-tracker { padding: 18px 12px; }
+    .order-page .order-tracker > div { font-size: 12px; }
+    .order-page .ordered-item b { font-size: 15px; }
+}

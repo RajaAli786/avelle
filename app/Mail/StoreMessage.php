@@ -9,6 +9,7 @@ class StoreMessage extends Mailable
         public ?string $actionUrl = null,
         public string $actionLabel = "Open Avelle",
         public array $lines = [],
+        public array $orderDetails = [],
     ) {}
     public function build()
     {

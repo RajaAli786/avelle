@@ -44,6 +44,7 @@ class StoreMail
                 url("/account/orders/" . $o->reference),
                 "View order",
                 ["Order: " . $o->reference],
+                OrderDisplay::email($o),
             ),
         );
     }
@@ -68,6 +69,7 @@ class StoreMail
                 url("/account/orders/" . $o->reference),
                 "View order",
                 $lines,
+                OrderDisplay::email($o),
             ),
         );
         if (config("mail.admin_address")) {

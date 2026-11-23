@@ -13,18 +13,22 @@ class OrdersController
     private function own(string $reference)
     {
         abort_unless(Auth::check(), 403);
-        $o = DB::table("orders")->where("reference", $reference)->where("user_id", Auth::id())->first();
+        $o = DB::table("orders")->where(function ($query) use ($reference) {
+            $id = \App\Support\OrderDisplay::referenceId($reference);
+            $id !== null ? $query->where('id', $id) : $query->where('reference', $reference);
+        })->where("user_id", Auth::id())->first();
         abort_unless($o, 404);
         return $o;
     }
     public function show(string $reference)
     {
         if (!Auth::check()) {
-            return redirect(url("/account/login"));
+            return \App\Support\AuthReturn::login(request(), url('/account/orders/' . $reference));
         }
         $o = $this->own($reference);
         return view("market.order", [
             "order" => $o,
+            "orderItems" => \App\Support\OrderDisplay::items($o),
             "shipments" => DB::table("seller_orders")->where("order_id", $o->id)->get(),
             "events" => DB::table("order_events")->where("order_id", $o->id)->orderBy("id")->get(),
             "returns" => DB::table("return_requests")->where("order_id", $o->id)->latest()->get(),
@@ -117,9 +121,16 @@ class OrdersController
     }
     public function track(Request $r)
     {
-        $d = $r->validate(["reference" => "required|uuid", "email" => "required|email|max:200"]);
+        $d = $r->validate(["reference" => "required|string|max:64", "email" => "required|email|max:200"]);
         $o = DB::table("orders")
-            ->where("reference", $d["reference"])
+            ->where(function ($query) use ($d) {
+                $id = \App\Support\OrderDisplay::referenceId($d["reference"]);
+                if ($id !== null) {
+                    $query->where('id', $id);
+                } else {
+                    $query->where('reference', trim($d['reference']));
+                }
+            })
             ->whereRaw("lower(email)=?", [strtolower($d["email"])])
             ->first();
         if (!$o) {
@@ -130,6 +141,7 @@ class OrdersController
         return view("market.tracking", [
             "result" => collect($o)
                 ->only(["reference", "status", "created_at", "carrier", "tracking_number", "tracking_url"])
+                ->put("reference", \App\Support\OrderDisplay::reference($o))
                 ->all(),
         ]);
     }

@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin.css') }}?v=4">
+    <link rel="stylesheet" href="{{ asset('admin-workspace.css') }}?v=3">
 </head>
 
-<body class="admin-login-page">
+<body class="admin-login-page admin-workspace admin-auth">
     <main class="login-box">
         <div class="admin-login-brand"><span class="brand-mark">A</span><b>AVELLE</b><span>STORE ADMIN</span></div>
         <div class="card">
@@ -34,7 +35,7 @@
                         class="btn btn-primary w-100">Sign in to dashboard <i
                             class="bi bi-arrow-right ms-2"></i></button>
                 </form>
-                <div class="admin-login-note"><i class="bi bi-database-lock"></i> Database authentication · Admin access
+                <div class="admin-login-note"><i class="bi bi-database-lock"></i> Admin access
                     only</div>
             </div>
         </div><a class="back-to-store" href="{{ url('/') }}"><i class="bi bi-arrow-left"></i> Back to

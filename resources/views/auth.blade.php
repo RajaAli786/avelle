@@ -10,8 +10,12 @@
         <p class="muted">
             {{ $mode === 'register' ? 'Create your account to start your Avelle story.' : 'Sign in to your orders and everyday favourites.' }}
         </p>
+        @if (!empty($returnTarget))
+            <p class="auth-return-note">After signing in, you’ll return to where you left off.</p>
+        @endif
         <form method="POST" action="{{ url('/account/' . ($mode === 'register' ? 'register' : 'login')) }}">@csrf<input
                 type="hidden" name="checkout" value="{{ $checkout ? 1 : 0 }}">
+            <input type="hidden" name="return_to" value="{{ $returnTarget ?? '' }}">
             @if ($mode === 'register')
             <label>Full name<input name="name" required value="{{ old('name') }}" maxlength="100"
                     autocomplete="name"></label>

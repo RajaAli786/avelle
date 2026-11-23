@@ -86,8 +86,13 @@ async function request(path, data, method = "POST") {
   } catch {
     throw Error("We could not load this information. Please refresh and try again.");
   }
-  if (!response.ok)
-    throw Error(Object.values(result.errors || {}).flat()[0] || result.message || "Please try again.");
+  if (!response.ok) {
+    const error = new Error(Object.values(result.errors || {}).flat()[0] || result.message || "Please try again.");
+    if (response.status === 401 || response.status === 419) {
+      error.loginUrl = result.login_url || url("/account/login") + "?return_to=" + encodeURIComponent(location.href);
+    }
+    throw error;
+  }
   return result;
 }
 function localSave() {
@@ -742,6 +747,10 @@ document.addEventListener("submit", async (e) => {
       sessionStorage.removeItem("avelle-checkout-key");
       location.href = url("/account/orders/" + encodeURIComponent(result.reference) + "?new=1");
     } catch (error) {
+      if (error.loginUrl) {
+        location.href = error.loginUrl;
+        return;
+      }
       $("#checkoutError").textContent = error.message;
       button.disabled = false;
       button.textContent = "Place order →";

@@ -56,7 +56,7 @@ Online payment SDKs, courier APIs and automatic bank payout/refund integrations 
 ### Customer accounts and orders
 
 - Registration, login, logout, profile editing and password changes.
-- Guest checkout creates an account; an existing email must sign in before checkout.
+- Checkout requires sign-in or account creation first. Customers return to their original page after authentication, with their cart preserved.
 - Saved delivery addresses and default address selection.
 - COD checkout with server-calculated prices, shipping, discounts and inventory checks.
 - Transactional stock deduction and checks against duplicate cart lines exceeding stock.
@@ -360,3 +360,14 @@ For subdirectory development (`/avelle`), SEO routes are under that prefix. Sear
 Validation: `php tests/seo.php` checks metadata persistence/escaping, canonical pagination, structured product offers/approved ratings, private indexing headers, sitemap filtering/XML, development guards, field limits, and seller ownership/moderation. SEO plus information-page, catalogue, seller, customer/admin and seller-offer suites passed after these changes; fixtures rolled back.
 
 References: [Google supported meta tags](https://developers.google.com/search/docs/crawling-indexing/special-tags), [developer SEO guide](https://developers.google.com/search/docs/fundamentals/get-started-developers).
+
+## Order, checkout and admin updates
+
+- Customer order details use readable typography, product thumbnails and short order numbers such as AVL-00000049. Existing order URLs continue to work.
+- Confirmation and status emails include every ordered product, embedded local product images, quantities, sizes, amounts, delivery address and totals.
+- Customers can save multiple delivery addresses, select Deliver to this address, add a new address and edit existing addresses. Earlier orders retain their original delivery details.
+- Checkout requires login or registration. Authentication returns customers to the originating local page, preserving its query and fragment. The header displays the signed-in customer's first name.
+- Admin lists use searchable, paginated tables with coloured headers and status badges. View links open separate record details and existing update forms.
+- Run php artisan migrate after updating. The delivery-address migration imports the latest delivery address only for customers without saved addresses.
+
+Validation: tests/auth-return.php, tests/checkout-addresses.php and tests/order-display.php cover authentication redirects, address ownership and persistence, readable order numbers, all-product email rendering and embedded images. Fixtures roll back and no external emails are sent. Existing catalogue, customer/admin, seller, SEO and information-page regression suites also passed during this update.

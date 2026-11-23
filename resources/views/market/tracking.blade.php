@@ -3,14 +3,14 @@
         <span class="eyebrow">YOUR ORDER, EVERY STEP OF THE WAY</span>
         <h1 class="page-title">Track an order</h1>
         <p class="muted">Use the full order reference and the email entered at checkout.</p>
-        <form class="form-card" method="POST" action="{{ url('/track-order') }}">@csrf<label>Order reference<input
-                    name="reference" value="{{ old('reference') }}" required
+        <form class="form-card" method="POST" action="{{ url('/track-order') }}">@csrf<label>Order number<input
+                    name="reference" placeholder="AVL-00000023" value="{{ old('reference') }}" required
                     placeholder="Full order reference"></label><label>Email address<input name="email" type="email"
                     value="{{ old('email') }}" required autocomplete="email"></label><button class="pink-button full">Find
                 my order →</button></form>
         @if ($result)
             <div class="tracking-result"><span class="order-badge">{{ ucfirst($result['status']) }}</span>
-                <h2>Order {{ strtoupper(substr($result['reference'], 0, 8)) }}</h2>
+                <h2>Order {{ $result['reference'] }}</h2>
                 <p>Placed {{ date('d M Y', strtotime($result['created_at'])) }}</p>
                 @if ($result['tracking_number'])
                     <p>{{ $result['carrier'] }} · {{ $result['tracking_number'] }}</p>
