@@ -46,6 +46,9 @@
                                     maxlength="100" autocomplete="address-level1"></label></div><label>PIN code<input
                                 name="pincode" required pattern="[1-9][0-9]{5}" title="6-digit Indian PIN code"
                                 autocomplete="postal-code" value="{{ $selectedAddress?->pincode ?? auth()->user()?->pincode }}"></label>
+                        @if ($walletEnabled && $walletBalance > 0)
+                            <label class="wallet-choice"><input type="checkbox" name="use_wallet" id="useWallet" value="1"><span><b>Use my wallet · ₹{{ number_format($walletBalance) }} available</b><p>Shopping credit applies to merchandise after coupons. Delivery is paid separately.</p></span></label>
+                        @endif
                         <div class="payment-choice"><span>◉</span>
                             <div><b>Cash on delivery</b>
                                 <p>Pay when your order arrives.</p>

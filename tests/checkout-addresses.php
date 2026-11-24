@@ -37,6 +37,7 @@ DB::beginTransaction();
 try {
     $user=App\Models\User::create(['name'=>'Anita Preview','email'=>'address-'.uniqid().'@example.test','password'=>bin2hex(random_bytes(16))]);
     $other=App\Models\User::create(['name'=>'Other Preview','email'=>'other-'.uniqid().'@example.test','password'=>bin2hex(random_bytes(16))]);
+    $user->markEmailAsVerified();
     Auth::login($user);
     requestFor();
     $address=['label'=>'Home','name'=>'Anita Preview','phone'=>'9876543210','address'=>'Sample address for checkout','city'=>'Delhi','state'=>'Delhi','pincode'=>'110001'];

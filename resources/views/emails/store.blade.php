@@ -38,8 +38,8 @@
     @endforeach
     </table>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0 24px;border-top:1px solid #e9dce7">
-        @foreach (['Subtotal'=>'subtotal','Delivery'=>'shipping','Discount'=>'discount'] as $label=>$key)
-            <tr><td style="padding:12px 0 0;font-size:15px;color:#65566c">{{ $label }}</td><td align="right" style="padding:12px 0 0;font-size:15px;color:#403048">{{ $key==='discount'?'−':'' }}&#8377;{{ number_format($orderDetails[$key]) }}</td></tr>
+        @foreach (['Subtotal'=>'subtotal','Delivery'=>'shipping','Discount'=>'discount','Wallet credit'=>'wallet_spent'] as $label=>$key)
+            <tr><td style="padding:12px 0 0;font-size:15px;color:#65566c">{{ $label }}</td><td align="right" style="padding:12px 0 0;font-size:15px;color:#403048">{{ in_array($key, ['discount','wallet_spent'])?'−':'' }}&#8377;{{ number_format($orderDetails[$key] ?? 0) }}</td></tr>
         @endforeach
         <tr><td style="padding:16px 0 0;font-size:20px;font-weight:bold">Total</td><td align="right" style="padding:16px 0 0;font-size:20px;font-weight:bold">&#8377;{{ number_format($orderDetails['total']) }}</td></tr>
     </table>

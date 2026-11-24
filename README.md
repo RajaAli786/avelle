@@ -76,7 +76,7 @@ Online payment SDKs, courier APIs and automatic bank payout/refund integrations 
 - Minimum subtotal, maximum savings, expiry, usage cap and pause / reactivate controls.
 - Public banner visibility, headline and animation settings.
 - One code per order; referral codes are private, first-order only and cannot be used by their owner email.
-- Automatic referral commissions, wallets and reward payouts are not implemented.
+- Admin-controlled referral rewards credit a customer shopping wallet after delivery, payment collection and the return window. Wallet credits support checkout redemption and cancellation/return restoration. Cash withdrawals and automatic bank payouts are not implemented.
 
 ### Admin panel
 
@@ -140,10 +140,10 @@ This adds seller profiles, product ownership/moderation and seller shipment reco
 | Delivery / courier API | Manual carrier and tracking entry works; booking, labels and live courier sync are pending. |
 | Refund transfers | Admin records are available; actual refunds are processed separately. |
 | SMS / WhatsApp / OTP | Not integrated. |
-| Email verification | Not implemented; password recovery is implemented separately. |
-| Referral wallet / commissions | Not implemented. |
+| Email verification | Expiring signed links, resend throttling and verified-email checkout protection. Password recovery remains separate. |
+| Referral wallet / commissions | Customer shopping-credit ledger and referral rules implemented. Seller commission and external payout records remain separate; no automatic bank transfers. |
 | GST / tax invoices | Printable order receipt only; tax calculation and compliant invoicing are pending. |
-| Failed email retry | Failures are logged; automatic retry / queue processing is not configured. |
+| Failed email retry | Encrypted database outbox, bounded automatic retry and admin Retry button. Requires the scheduler to be running. |
 | Product content | Replace demo images and descriptions; add real specifications, size charts and stock. |
 | Store policies | Replace starter about, shipping, returns, privacy, terms and FAQ content before launch. |
 | Production deployment | Configure hosting, HTTPS, domain, database permissions, backups and monitoring. |
@@ -287,7 +287,7 @@ php artisan store:mail-test your-email@example.com
 
 In log mode, the command generates only a local preview. In SMTP mode, it sends one test email. Sending requires valid credentials; replacing only the email ID is not sufficient. Reset links use `APP_URL`, so localhost links work only on the development computer.
 
-See [EMAIL-SETUP.md](EMAIL-SETUP.md) for details. Mail failures are logged without SMTP credentials and do not undo an already committed order. Logs may contain personal data and reset links: do not commit them.
+See [EMAIL-SETUP.md](EMAIL-SETUP.md) for details. Mail failures retain an encrypted retry payload in the database and do not undo an already committed order. Admin → Email delivery shows recipient, subject, attempts and a safe error type. Logs may contain personal data and reset links: do not commit them.
 
 ## Validation
 
@@ -371,3 +371,54 @@ References: [Google supported meta tags](https://developers.google.com/search/do
 - Run php artisan migrate after updating. The delivery-address migration imports the latest delivery address only for customers without saved addresses.
 
 Validation: tests/auth-return.php, tests/checkout-addresses.php and tests/order-display.php cover authentication redirects, address ownership and persistence, readable order numbers, all-product email rendering and embedded images. Fixtures roll back and no external emails are sent. Existing catalogue, customer/admin, seller, SEO and information-page regression suites also passed during this update.
+
+## Brand catalogue
+
+Admin → Brands manages brand name, unique slug, description, optional logo (JPG/PNG/WebP/AVIF up to 2 MB), sort position and active status. The brand list has search, pagination and View/edit links like Categories. Admin and seller product forms select brands from a dropdown; sellers cannot create or rename master brands. Unbranded products are supported.
+
+Run `php artisan migrate` after updating. The brand migration imports existing product brand names and links their products, preserving their labels. Renaming a brand updates linked storefront labels and product structured data. Inactive brands cannot be newly assigned; existing products retain their assignment. The storefront Brand filter includes active brands with available products. Brand management does not create a separate public brand page.
+
+Validation: `php tests/brands.php` covers admin permissions, duplicate validation, logo validation/upload, product selection, renaming, inactive-brand rules, seller selection, frontend filters and existing-brand preservation. Fixtures roll back.
+
+
+## Email verification, referral wallet and mail retries
+
+Run `php artisan migrate` after updating. These migrations add the verified-email timestamp, wallet/reward ledger, mail outbox and product brand catalogue. Existing accounts are not silently marked verified and passwords stay unchanged.
+
+### Email verification
+
+New customer registrations and new seller accounts receive a signed verification link, valid for 60 minutes. Existing users can open `/email/verify` and request a link. A signed-in user must verify the same email before placing an order; browsing and account access remain available. Successful verification returns to the intended checkout. Requests are throttled, changed/expired links are rejected, and changing an email through admin or seller account settings resets its verification.
+
+### Referral rules and wallet visibility
+
+Open Admin → Referral wallet. The program starts paused so the owner can choose the reward budget before activation. Set Active, fixed rupees or percentage, reward value, maximum per order, minimum eligible merchandise after coupon discount, and the new customer's discount. Default examples are ₹50 reward, ₹100 maximum, ₹499 qualifying merchandise and ₹50 friend discount. Existing reward amounts are snapshots and do not change with later rule edits.
+
+When active, customer accounts show Refer & Earn / Wallet. Verified customers get a stable personal code and shareable signup link. Their friend enters the code in the coupon box on their first order; one code is allowed per order, self-referrals and repeat buyers are blocked. Existing targeted admin referral promotions can also generate rewards for a matching active, verified customer owner when the program is active. Referral rewards are platform funded, separate from seller commission.
+
+Rewards stay pending until the order is delivered, COD is collected, the return window ends and no non-rejected return exists. A completed return or cancellation reverses the reward. Customers see only their own code, balances and history. Disabling the program stops new rewards/codes, while existing balances/history and already-earned reward processing remain available.
+
+Available wallet credit can be opted into at checkout, after coupons and against merchandise only. Delivery charges remain payable. Server row locks and unique ledger keys prevent duplicate spending and credits on order retries. Cancellation restores credit once. Completed returns restore the purchased item's allocated wallet share; partial quantities reconcile without creating extra rounding credit. The external cash refund excludes wallet credit. A later reversal can leave a negative balance, which future credits clear before redemption. Credit cannot be withdrawn or transferred.
+
+Seller commission rates continue under Admin → Sellers; each seller sees only their own gross/net/commission and payout records. Automatic bank payouts and online refunds remain deferred.
+
+### Failed email retry and scheduler setup
+
+Store transactional emails attempt immediate delivery. SMTP failures retain an encrypted payload and retry after 1, 5, 15 and 60 minutes, up to five total attempts. Admin → Email delivery provides manual retry after fixing SMTP. Verification links are refreshed for the same unverified account; expired/replaced password-reset links are discarded. Successful sends clear the stored payload. `Sent` means the transport accepted the email; `Logged` is local preview only. SMTP acceptance cannot guarantee inbox delivery. An interrupted worker may have an uncertain delivery outcome, so check the recipient before manually retrying it.
+
+For this XAMPP installation, start Apache/MySQL, then run in PowerShell:
+
+```powershell
+cd C:\xampp\htdocs\avelle
+.\Start-StoreTasks.ps1
+```
+
+`Start-Local.ps1` also starts the hidden scheduler. It does not start Apache or MySQL. The helper avoids duplicate scheduler processes. Run `.\Stop-StoreTasks.ps1` before stopping XAMPP. After restarting Windows, start the helper again; no Windows service or logon task is installed. Logs stay under ignored `storage/logs`. The helper's local database readiness check uses port 3306.
+
+For a production host, run Laravel's scheduler every minute with the host's cron/task manager. A terminal can run `php artisan schedule:work` for local foreground processing. Inspect `php artisan schedule:list`; retry runs every minute and pending rewards are checked every five minutes. No queue package or `queue:work` process is required for this outbox.
+
+```text
+php artisan store:mail-retry --limit=50
+php artisan store:referrals-process
+```
+
+Validation: `php tests/engagement.php` covers signed verification/ownership/expiry, checkout protection, admin permissions, reward eligibility and reversal, duplicate-credit protection, wallet spend/refunds and partial-return allocation, customer isolation, encrypted email failure retention, backoff/attempt limits, worker claims and manual retry. All mail transports in this suite are mocked and fixtures roll back.

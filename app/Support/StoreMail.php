@@ -1,20 +1,12 @@
 <?php
 namespace App\Support;
 use App\Mail\StoreMessage;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 class StoreMail
 {
     public static function send(string $email, StoreMessage $message): bool
     {
-        try {
-            Mail::to($email)->send($message);
-            return true;
-        } catch (\Throwable $e) {
-            Log::warning("Store email failed", ["type" => get_class($e), "subject" => $message->heading]);
-            return false;
-        }
+        return MailDelivery::send($email, $message);
     }
     public static function welcome($user): void
     {

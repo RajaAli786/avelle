@@ -47,6 +47,7 @@ class OrderFlow
                 "created_at" => now(),
                 "updated_at" => now(),
             ]);
+            ReferralWallet::sync($id);
             DB::afterCommit(fn() => StoreMail::status($o->reference, "cancelled"));
         });
     }

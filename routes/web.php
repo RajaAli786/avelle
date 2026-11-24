@@ -81,7 +81,7 @@ Route::post("/admin/store-settings", [\App\Http\Controllers\CatalogAdminControll
 Route::post("/admin/pages/{id}", [\App\Http\Controllers\CatalogAdminController::class, "page"]);
 Route::post("/admin/support/{id}", [\App\Http\Controllers\CatalogAdminController::class, "inquiry"]);
 
-foreach (["orders", "addresses", "profile", "security", "reviews", "returns"] as $section) {
+foreach (["orders", "addresses", "profile", "security", "reviews", "returns", "wallet"] as $section) {
     Route::get("/account/" . $section, [AccountController::class, "index"]);
 }
 
@@ -141,3 +141,14 @@ Route::get("/sitemap.xml", [\App\Http\Controllers\SeoController::class, "index"]
 Route::get("/sitemaps/{kind}/{page}.xml", [\App\Http\Controllers\SeoController::class, "sitemap"])
     ->where("kind", "static|products|categories|pages")
     ->whereNumber("page");
+
+
+Route::get('/email/verify', [\App\Http\Controllers\VerificationController::class, 'notice'])->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\VerificationController::class, 'verify'])
+    ->middleware(['signed', 'throttle:10,1'])->name('verification.verify');
+Route::post('/email/verification-notification', [\App\Http\Controllers\VerificationController::class, 'resend'])->middleware('throttle:3,1');
+Route::post('/admin/referrals/settings', [\App\Http\Controllers\EngagementController::class, 'settings']);
+Route::post('/admin/referrals/process', [\App\Http\Controllers\EngagementController::class, 'process'])->middleware('throttle:5,1');
+Route::post('/admin/emails/{id}/retry', [\App\Http\Controllers\EngagementController::class, 'retry'])->middleware('throttle:10,1');
+
+Route::post('/admin/brands', [\App\Http\Controllers\BrandController::class, 'save']);

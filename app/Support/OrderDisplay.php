@@ -66,6 +66,7 @@ class OrderDisplay
             'subtotal' => $order->subtotal,
             'shipping' => $order->shipping,
             'discount' => $order->discount,
+            'wallet_spent' => $order->wallet_spent ?? 0,
             'total' => $order->total,
             'payment' => ($order->payment_method === 'cod' ? 'Cash on delivery' : ucfirst($order->payment_method))
                 . ' · ' . ucfirst($order->payment_status ?? 'unpaid'),

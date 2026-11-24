@@ -46,7 +46,7 @@
 </section>
 <section class="admin-page" id="returns">
     <h2>Return requests</h2>
-    <p>Approve, receive and record refunds. Refunds must be processed separately before entering their reference.</p>
+    <p>Approve, receive and record refunds. Enter only the cash refund processed separately. The returned merchandise's proportional wallet share is restored automatically on completion; do not pay that credit in cash.</p>
     <div data-admin-list="returns"></div>
 @forelse($returnQueue as $r)
     <details class="editor-card" id="return-{{ $r->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'returns', 'title' => 'Return #'.$r->id, 'order' => \App\Support\OrderDisplay::reference((object)['id'=>$r->order_id]), 'customer' => $r->customer, 'reason' => $r->reason, 'refund' => '₹'.number_format($r->refund_amount), 'status' => ucfirst($r->status)]) }}'>

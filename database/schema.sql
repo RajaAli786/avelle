@@ -28,7 +28,26 @@ CREATE TABLE `addresses` (
   PRIMARY KEY (`id`),
   KEY `addresses_user_id_foreign` (`user_id`),
   CONSTRAINT `addresses_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `brands`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `brands` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(180) NOT NULL,
+  `description` text DEFAULT NULL,
+  `logo` varchar(255) DEFAULT NULL,
+  `sort_order` int(10) unsigned NOT NULL DEFAULT 0,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `brands_name_unique` (`name`),
+  UNIQUE KEY `brands_slug_unique` (`slug`),
+  KEY `brands_active_index` (`active`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `carts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -42,15 +61,12 @@ CREATE TABLE `carts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `carts_user_id_unique` (`user_id`),
   CONSTRAINT `carts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `categories` (
-  `seo_title` varchar(150) DEFAULT NULL,
-  `seo_description` varchar(320) DEFAULT NULL,
-  `seo_keywords` varchar(500) DEFAULT NULL,
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `parent_id` bigint(20) unsigned DEFAULT NULL,
   `name` varchar(255) NOT NULL,
@@ -60,12 +76,15 @@ CREATE TABLE `categories` (
   `sort_order` int(10) unsigned NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `seo_title` varchar(150) DEFAULT NULL,
+  `seo_description` varchar(320) DEFAULT NULL,
+  `seo_keywords` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `categories_name_unique` (`name`),
   UNIQUE KEY `categories_slug_unique` (`slug`),
   KEY `categories_parent_id_foreign` (`parent_id`),
   CONSTRAINT `categories_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `category_images`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -81,7 +100,7 @@ CREATE TABLE `category_images` (
   PRIMARY KEY (`id`),
   KEY `category_images_category_id_foreign` (`category_id`),
   CONSTRAINT `category_images_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `inquiries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -96,7 +115,7 @@ CREATE TABLE `inquiries` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -106,7 +125,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `order_events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -121,7 +140,7 @@ CREATE TABLE `order_events` (
   PRIMARY KEY (`id`),
   KEY `order_events_order_id_foreign` (`order_id`),
   CONSTRAINT `order_events_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=209 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -155,6 +174,7 @@ CREATE TABLE `orders` (
   `tracking_url` varchar(2048) DEFAULT NULL,
   `delivered_at` timestamp NULL DEFAULT NULL,
   `checkout_key` char(36) DEFAULT NULL,
+  `wallet_spent` int(10) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `orders_reference_unique` (`reference`),
   UNIQUE KEY `orders_gateway_order_id_unique` (`gateway_order_id`),
@@ -162,15 +182,12 @@ CREATE TABLE `orders` (
   UNIQUE KEY `orders_checkout_key_unique` (`checkout_key`),
   KEY `orders_user_id_foreign` (`user_id`),
   CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `pages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `pages` (
-  `seo_title` varchar(150) DEFAULT NULL,
-  `seo_description` varchar(320) DEFAULT NULL,
-  `seo_keywords` varchar(500) DEFAULT NULL,
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `slug` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
@@ -178,6 +195,9 @@ CREATE TABLE `pages` (
   `active` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `seo_title` varchar(150) DEFAULT NULL,
+  `seo_description` varchar(320) DEFAULT NULL,
+  `seo_keywords` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `pages_slug_unique` (`slug`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -206,7 +226,7 @@ CREATE TABLE `product_images` (
   PRIMARY KEY (`id`),
   KEY `product_images_product_id_foreign` (`product_id`),
   CONSTRAINT `product_images_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `product_variants`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -226,15 +246,12 @@ CREATE TABLE `product_variants` (
   UNIQUE KEY `product_variants_product_id_size_color_unique` (`product_id`,`size`,`color`),
   UNIQUE KEY `product_variants_sku_unique` (`sku`),
   CONSTRAINT `product_variants_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `products` (
-  `seo_title` varchar(150) DEFAULT NULL,
-  `seo_description` varchar(320) DEFAULT NULL,
-  `seo_keywords` varchar(500) DEFAULT NULL,
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `category` varchar(255) NOT NULL,
@@ -261,15 +278,21 @@ CREATE TABLE `products` (
   `seller_id` bigint(20) unsigned DEFAULT NULL,
   `seller_status` varchar(255) NOT NULL DEFAULT 'approved',
   `moderation_note` text DEFAULT NULL,
+  `seo_title` varchar(150) DEFAULT NULL,
+  `seo_description` varchar(320) DEFAULT NULL,
+  `seo_keywords` varchar(500) DEFAULT NULL,
+  `brand_id` bigint(20) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `products_slug_unique` (`slug`),
   UNIQUE KEY `products_sku_unique` (`sku`),
   KEY `products_category_id_foreign` (`category_id`),
   KEY `products_seller_id_foreign` (`seller_id`),
   KEY `products_seller_status_index` (`seller_status`),
+  KEY `products_brand_id_foreign` (`brand_id`),
+  CONSTRAINT `products_brand_id_foreign` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`) ON DELETE SET NULL,
   CONSTRAINT `products_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL,
   CONSTRAINT `products_seller_id_foreign` FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=182 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `promotions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -300,7 +323,36 @@ CREATE TABLE `promotions` (
   UNIQUE KEY `promotions_code_unique` (`code`),
   KEY `promotions_seller_id_foreign` (`seller_id`),
   CONSTRAINT `promotions_seller_id_foreign` FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=207 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `referral_rewards`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `referral_rewards` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` bigint(20) unsigned NOT NULL,
+  `referrer_id` bigint(20) unsigned NOT NULL,
+  `customer_id` bigint(20) unsigned NOT NULL,
+  `code` varchar(40) NOT NULL,
+  `eligible_amount` int(10) unsigned NOT NULL,
+  `reward_type` varchar(12) NOT NULL,
+  `reward_value` int(10) unsigned NOT NULL,
+  `amount` int(10) unsigned NOT NULL,
+  `status` varchar(16) NOT NULL DEFAULT 'pending',
+  `available_at` timestamp NULL DEFAULT NULL,
+  `credited_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `referral_rewards_order_id_unique` (`order_id`),
+  KEY `referral_rewards_referrer_id_foreign` (`referrer_id`),
+  KEY `referral_rewards_customer_id_foreign` (`customer_id`),
+  KEY `referral_rewards_status_index` (`status`),
+  KEY `referral_rewards_available_at_index` (`available_at`),
+  CONSTRAINT `referral_rewards_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `referral_rewards_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `referral_rewards_referrer_id_foreign` FOREIGN KEY (`referrer_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `return_requests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -324,7 +376,7 @@ CREATE TABLE `return_requests` (
   KEY `return_requests_user_id_foreign` (`user_id`),
   CONSTRAINT `return_requests_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   CONSTRAINT `return_requests_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `reviews`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -345,7 +397,7 @@ CREATE TABLE `reviews` (
   KEY `reviews_user_id_foreign` (`user_id`),
   CONSTRAINT `reviews_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   CONSTRAINT `reviews_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `seller_orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -378,7 +430,7 @@ CREATE TABLE `seller_orders` (
   KEY `seller_orders_seller_id_foreign` (`seller_id`),
   CONSTRAINT `seller_orders_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   CONSTRAINT `seller_orders_seller_id_foreign` FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `sellers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -404,7 +456,29 @@ CREATE TABLE `sellers` (
   UNIQUE KEY `sellers_slug_unique` (`slug`),
   KEY `sellers_status_index` (`status`),
   CONSTRAINT `sellers_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `store_mail_deliveries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `store_mail_deliveries` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `recipient` varchar(255) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `payload` longtext DEFAULT NULL,
+  `status` varchar(16) NOT NULL DEFAULT 'pending',
+  `attempts` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `next_attempt_at` timestamp NULL DEFAULT NULL,
+  `locked_at` timestamp NULL DEFAULT NULL,
+  `lock_token` varchar(64) DEFAULT NULL,
+  `error_type` varchar(200) DEFAULT NULL,
+  `sent_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `store_mail_deliveries_status_index` (`status`),
+  KEY `store_mail_deliveries_next_attempt_at_index` (`next_attempt_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `store_settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -433,11 +507,48 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `auth_version` int(10) unsigned NOT NULL DEFAULT 1,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`),
   KEY `users_role_index` (`role`),
   KEY `users_is_active_index` (`is_active`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=331 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `wallet_accounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wallet_accounts` (
+  `user_id` bigint(20) unsigned NOT NULL,
+  `balance` bigint(20) NOT NULL DEFAULT 0,
+  `referral_code` varchar(30) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `wallet_accounts_referral_code_unique` (`referral_code`),
+  CONSTRAINT `wallet_accounts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `wallet_entries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wallet_entries` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `order_id` bigint(20) unsigned DEFAULT NULL,
+  `entry_key` varchar(120) NOT NULL,
+  `kind` varchar(24) NOT NULL,
+  `amount` bigint(20) NOT NULL,
+  `balance_after` bigint(20) NOT NULL,
+  `note` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `wallet_entries_entry_key_unique` (`entry_key`),
+  KEY `wallet_entries_user_id_foreign` (`user_id`),
+  KEY `wallet_entries_order_id_foreign` (`order_id`),
+  CONSTRAINT `wallet_entries_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `wallet_entries_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `wishlists`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

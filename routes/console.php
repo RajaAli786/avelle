@@ -59,3 +59,17 @@ Artisan::command("store:mail-test {email}", function () {
         return 1;
     }
 });
+
+
+Artisan::command('store:mail-retry {--limit=50}', function () {
+    \Illuminate\Support\Facades\DB::table('store_settings')->updateOrInsert(
+        ['key' => 'store_tasks_last_run_at'], ['value' => now()->toIso8601String()],
+    );
+    $sent = \App\Support\MailDelivery::retryDue(max(1, min(100, (int) $this->option('limit'))));
+    $this->info($sent . ' email(s) processed.');
+});
+Artisan::command('store:referrals-process', function () {
+    $this->info(\App\Support\ReferralWallet::processDue() . ' reward(s) checked.');
+});
+\Illuminate\Support\Facades\Schedule::command('store:mail-retry')->everyMinute()->withoutOverlapping(10);
+\Illuminate\Support\Facades\Schedule::command('store:referrals-process')->everyFiveMinutes()->withoutOverlapping(10);

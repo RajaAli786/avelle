@@ -157,6 +157,7 @@ try {
     check($blocked->getStatusCode() === 401, "Checkout requires an authenticated account");
     $account->register(req($payload));
     $owner = Auth::user();
+    $owner->markEmailAsVerified();
     $order = $c->checkout(req($payload))->getData(true);
     check($order["total"] === 1448, "Checkout recalculates prices and totals on server");
     check(

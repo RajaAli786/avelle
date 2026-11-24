@@ -107,6 +107,7 @@ class SellerOrders
                 $parent["delivered_at"] = now();
             }
             DB::table("orders")->where("id", $order->id)->update($parent);
+            ReferralWallet::sync($order->id);
             if ($data["status"] !== $row->status) {
                 DB::table("order_events")->insert([
                     "order_id" => $order->id,

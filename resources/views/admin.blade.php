@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin.css') }}?v=7">
-    <link rel="stylesheet" href="{{ asset('admin-workspace.css') }}?v=3">
+    <link rel="stylesheet" href="{{ asset('admin-workspace.css') }}?v=4">
 </head>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary admin-workspace" data-initial-page="{{ old('_section', 'dashboard') }}">
@@ -67,6 +67,9 @@
                                     @endif
                                 </p>
                             </a></li>
+                        <li class="nav-item"><a href="#referral-wallet" class="nav-link" data-admin-nav="referral-wallet"><i class="nav-icon bi bi-wallet2"></i><p>Referral wallet</p></a></li>
+                        <li class="nav-item"><a href="#email-delivery" class="nav-link" data-admin-nav="email-delivery"><i class="nav-icon bi bi-envelope-check"></i><p>Email delivery</p></a></li>
+                        <li class="nav-item"><a href="#brands" class="nav-link" data-admin-nav="brands"><i class="nav-icon bi bi-award"></i><p>Brands</p></a></li>
                         <li class="nav-item"><a href="#categories" class="nav-link" data-admin-nav="categories"><i
                                     class="nav-icon bi bi-grid"></i>
                                 <p>Categories</p>
@@ -139,6 +142,8 @@
                         @endforeach
                     </div>
                     @endif
+                    @include('admin.engagement')
+                    @include('admin.brands')
                     <section class="admin-page" id="dashboard">
                         <div class="dashboard-welcome">
                             <div>
@@ -397,7 +402,7 @@
                                 <summary>{{ \App\Support\OrderDisplay::reference($o) }} · {{ $o->name }}</summary>
                                 <div class="admin-order-overview">
                                     <section><h3>Customer and delivery</h3><p><strong>{{ $o->name }}</strong><br>{{ $o->email }}<br>{{ $o->phone }}<br>{{ $o->address }}, {{ $o->city }} {{ $o->pincode }}</p></section>
-                                    <section><h3>Order summary</h3><p>Placed {{ date('d M Y, h:i A', strtotime($o->created_at)) }} IST<br>Subtotal ₹{{ number_format($o->subtotal) }}<br>Shipping ₹{{ number_format($o->shipping) }}<br>Discount ₹{{ number_format($o->discount) }} {{ $o->code }}<br><strong>Total ₹{{ number_format($o->total) }}</strong></p></section>
+                                    <section><h3>Order summary</h3><p>Placed {{ date('d M Y, h:i A', strtotime($o->created_at)) }} IST<br>Subtotal ₹{{ number_format($o->subtotal) }}<br>Shipping ₹{{ number_format($o->shipping) }}<br>Discount ₹{{ number_format($o->discount) }} {{ $o->code }}<br>Wallet credit ₹{{ number_format($o->wallet_spent ?? 0) }}<br><strong>Total ₹{{ number_format($o->total) }}</strong></p></section>
                                 </div>
                                 <section class="admin-order-items"><h3>Items</h3>
                                     @foreach (\App\Support\OrderDisplay::items($o) as $item)
@@ -586,8 +591,8 @@
     </div>
     <script src="{{ asset('vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/adminlte.min.js') }}"></script>
-    <script src="{{ asset('admin.js') }}?v=8"></script>
-<script src="{{ asset('admin-records.js') }}?v=1"></script>
+    <script src="{{ asset('admin.js') }}?v=10"></script>
+<script src="{{ asset('admin-records.js') }}?v=2"></script>
 </body>
 
 </html>

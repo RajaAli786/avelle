@@ -8,7 +8,7 @@
     </div>
     <div data-admin-list="products"></div>
 @foreach ($products->concat([null]) as $p)
-    <details class="editor-card" id="product-{{ $p?->id ?? 'new' }}" data-search-row data-admin-record='{{ json_encode(['group' => 'products', 'title' => $p?->name ?? 'Add product', 'create' => !$p, 'name' => $p?->name, 'category' => $p?->category, 'price' => $p ? '₹'.number_format($p->price) : '', 'stock' => $p?->stock, 'status' => $p ? ($p->seller_status !== 'approved' ? ucfirst($p->seller_status) : ($p->active ? 'Published' : 'Hidden')) : '']) }}'>
+    <details class="editor-card" id="product-{{ $p?->id ?? 'new' }}" data-search-row data-admin-record='{{ json_encode(['group' => 'products', 'title' => $p?->name ?? 'Add product', 'create' => !$p, 'name' => $p?->name, 'category' => $p?->category, 'brand' => $p?->brand ?: 'Unbranded', 'price' => $p ? '₹'.number_format($p->price) : '', 'stock' => $p?->stock, 'status' => $p ? ($p->seller_status !== 'approved' ? ucfirst($p->seller_status) : ($p->active ? 'Published' : 'Hidden')) : '']) }}'>
         <summary class="editor-summary">
             {{ $p ? '#' . $p->id . ' · ' . $p->name . ' · ₹' . $p->price . ' · Stock ' . $p->stock : '+ Add a product' }}
         </summary>
@@ -23,12 +23,20 @@
             @csrf<input type="hidden" name="_section" value="products"><input type="hidden" name="id"
                 value="{{ $p?->id }}">
             <div class="editor">
-                @foreach (['name' => 'Product name', 'slug' => 'URL slug (optional)', 'sku' => 'SKU (optional)', 'brand' => 'Brand', 'price' => 'Selling price ₹', 'old' => 'Original price ₹', 'color' => 'Colour', 'tag' => 'Badge', 'sizes' => 'Sizes separated by commas', 'stock' => 'Stock (calculated when variants exist)'] as $key => $label)
+                @foreach (['name' => 'Product name', 'slug' => 'URL slug (optional)', 'sku' => 'SKU (optional)', 'price' => 'Selling price ₹', 'old' => 'Original price ₹', 'color' => 'Colour', 'tag' => 'Badge', 'sizes' => 'Sizes separated by commas', 'stock' => 'Stock (calculated when variants exist)'] as $key => $label)
                 <label>{{ $label }}<input class="form-control" name="{{ $key }}"
                         value="{{ $key === 'sizes' ? ($p ? implode(', ', json_decode($p->sizes, true)) : 'S, M, L') : $p?->$key ?? '' }}"
                         @required(in_array($key, ['name', 'price' , 'old' , 'color' , 'sizes' , 'stock' ]))
                         @if (in_array($key, ['price', 'old' , 'stock' ])) type="number" min="0" @endif></label>
                 @endforeach
+                <label>Brand<select class="form-select" name="brand_id">
+                    <option value="">Unbranded / no brand</option>
+                    @foreach ($catalogBrands as $brand)
+                        @if ($brand->active || (int) $p?->brand_id === (int) $brand->id)
+                            <option value="{{ $brand->id }}" @selected((int) $p?->brand_id === (int) $brand->id)>{{ $brand->name }}{{ $brand->active ? '' : ' (inactive — current brand)' }}</option>
+                        @endif
+                    @endforeach
+                </select><small>{{ ($sellerMode ?? false) ? 'Missing a brand? Ask the store administrator to add it.' : 'Manage this dropdown in the Brands section.' }}</small></label>
                 <label>Category<select class="form-select" name="category_id" required>
                         @foreach ($catalogCategories as $c)
                         <option value="{{ $c->id }}" @selected($p?->category_id === $c->id)>

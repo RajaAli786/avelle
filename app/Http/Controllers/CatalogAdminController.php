@@ -70,6 +70,7 @@ class CatalogAdminController
                 Rule::unique("products")->ignore($r->id),
             ],
             "sku" => ["nullable", "string", "max:100", Rule::unique("products")->ignore($r->id)],
+            "brand_id" => "nullable|integer|exists:brands,id",
             "brand" => "nullable|string|max:100",
             "audience" => "required|in:women,girls,both",
             "seo_title" => "nullable|string|max:150",
@@ -95,6 +96,19 @@ class CatalogAdminController
         ]);
         $id = $d["id"] ?? null;
         $existing = $id ? DB::table("products")->find($id) : null;
+        $brandId = $r->has('brand_id') ? ($d['brand_id'] ?? null) : ($existing?->brand_id ?? null);
+        // Old clients may still post the text label. It must resolve to a managed brand.
+        if (!$r->has('brand_id') && $r->has('brand')) {
+            $name = trim($d['brand'] ?? '');
+            $brandId = $name !== '' ? DB::table('brands')->where('name', $name)->value('id') : null;
+            if ($name !== '' && !$brandId) {
+                throw ValidationException::withMessages(['brand_id' => 'Select a brand from the list. Ask the administrator to add a missing brand.']);
+            }
+        }
+        $brand = $brandId ? DB::table('brands')->find($brandId) : null;
+        if ($brand && !$brand->active && (int) $brand->id !== (int) ($existing?->brand_id ?? 0)) {
+            throw ValidationException::withMessages(['brand_id' => 'This brand is inactive. Select an active brand.']);
+        }
         if (!$id && !$r->hasFile("images") && !$r->filled("image")) {
             throw ValidationException::withMessages(["images" => "Add at least one product image."]);
         }
@@ -113,7 +127,7 @@ class CatalogAdminController
                 "seo_keywords",
                 "name",
                 "category_id",
-                "brand",
+                "brand_id",
                 "audience",
                 "description",
                 "price",
@@ -123,6 +137,8 @@ class CatalogAdminController
                 "stock",
             ])
             ->all();
+        $values['brand_id'] = $brand?->id;
+        $values['brand'] = $brand?->name;
         if ($this->sellerMode) {
             $values["seller_id"] = \App\Support\SellerAccess::profile(true)->id;
             $values["seller_status"] = "pending";
@@ -463,6 +479,7 @@ class CatalogAdminController
                 $values["restocked_at"] = now();
             }
             DB::table("return_requests")->where("id", $id)->update($values);
+            \App\Support\ReferralWallet::sync($order->id);
         });
         return redirect(url("/admin") . "#returns")->with(
             "success",

@@ -14,6 +14,9 @@ class AccountController
     public function form(Request $r, string $mode = "login")
     {
         \App\Support\AuthReturn::remember($r);
+        if ($r->filled('ref') && preg_match('/^AV[A-Z0-9]{12}$/', strtoupper($r->input('ref')))) {
+            $r->session()->put('referral_code', strtoupper($r->input('ref')));
+        }
         if (Auth::check()) {
             return \App\Support\AuthReturn::finish($r);
         }
@@ -42,7 +45,10 @@ class AccountController
                 ->only(["name", "email", "password"])
                 ->all(),
         );
-        DB::afterCommit(fn() => \App\Support\StoreMail::welcome($user));
+        DB::afterCommit(function () use ($user) {
+            \App\Support\StoreMail::welcome($user);
+            $user->sendEmailVerificationNotification();
+        });
         Auth::login($user);
         $r->session()->regenerate();
         $r->session()->put("auth_version", Auth::user()->auth_version);
@@ -75,7 +81,7 @@ class AccountController
             return \App\Support\AuthReturn::login($r);
         }
         $section = last(explode("/", $r->path()));
-        if (!in_array($section, ["orders", "addresses", "profile", "security", "reviews", "returns"])) {
+        if (!in_array($section, ["orders", "addresses", "profile", "security", "reviews", "returns", "wallet"])) {
             $section = "overview";
         }
         $filters = $r->validate([
@@ -84,6 +90,10 @@ class AccountController
             "product" => "nullable|integer|min:1",
         ]);
         $uid = Auth::id();
+        $walletVisible = \App\Support\ReferralWallet::visible(Auth::user());
+        if ($section === 'wallet') {
+            abort_unless(Auth::user()->role === 'customer', 403);
+        }
         $base = DB::table("orders")->where("user_id", $uid);
         $query = clone $base;
         if ($section === "orders") {
@@ -139,6 +149,12 @@ class AccountController
         }
         return view("account", [
             "section" => $section,
+            'walletVisible' => $walletVisible,
+            'wallet' => $section === 'wallet' ? \App\Support\ReferralWallet::account($uid) : null,
+            'referralSettings' => \App\Support\ReferralWallet::settings(),
+            'returnDays' => (int) \App\Support\Shop::settings()['return_days'],
+            'rewards' => DB::table('referral_rewards')->where('referrer_id', $uid)->latest()->limit(100)->get(),
+            'walletEntries' => DB::table('wallet_entries')->where('user_id', $uid)->latest()->paginate(15, ['*'], 'wallet_page'),
             "user" => Auth::user(),
             "orders" => $query->latest()->paginate(10)->withQueryString(),
             "addresses" => DB::table("addresses")->where("user_id", $uid)->orderByDesc("is_default")->get(),

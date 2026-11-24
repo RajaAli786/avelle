@@ -1,8 +1,11 @@
 "use strict";
 const pages = {
   dashboard: "Dashboard",
+  "referral-wallet": "Referral wallet & rewards",
+  "email-delivery": "Email delivery",
   products: "Products",
   categories: "Categories",
+  brands: "Brands",
   sellers: "Sellers",
   "seller-orders": "Seller orders & payouts",
   reviews: "Reviews",

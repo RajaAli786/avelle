@@ -133,3 +133,7 @@
 .admin-workspace .admin-record-card tbody td:first-child { font-weight: 600; color: #334465; }
 .admin-workspace .admin-record-card .admin-record-view { color: var(--record-accent); background: var(--record-tint); }
 .admin-record-toolbar input:focus { outline: 2px solid var(--record-tint); border-color: var(--record-accent); }
+
+.admin-workspace .brand-logo-preview { object-fit: contain; padding: 10px; border: 1px solid #e3dded; background: #fff; border-radius: 12px; }
+.admin-workspace #brands .admin-table-shell { border-top: 3px solid #a469b8; }
+.admin-workspace #brands thead th { background: #f5edf9; color: #624173; }

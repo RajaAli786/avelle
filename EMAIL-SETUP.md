@@ -9,8 +9,11 @@ After editing, run from the project directory:
 .runtime/php/php.exe artisan config:clear
 .runtime/php/php.exe artisan store:mail-test your-email@example.com
 
-The test command sends exactly one test email to the address you provide. In log mode it only previews locally. No queue worker is required; messages send synchronously. Order emails send after the database transaction commits; a mail failure does not cancel an order and is recorded without SMTP credentials in storage/logs/laravel.log. Failed transactional emails are not automatically retried.
+The test command sends exactly one test email to the address you provide. In log mode it only previews locally. Initial sends are synchronous. Store transactional failures use the encrypted database outbox and scheduler; a queue worker is not required. Order emails send after the database transaction commits; a mail failure does not cancel an order. Admin → Email delivery shows delivery attempts and manual Retry. Failed store transactional emails retry automatically up to five attempts while the scheduler is running. The explicit mail-test command remains a single immediate setup test.
 
 Included: welcome email, customer order confirmation, optional admin new-order notification, order status/cancellation update and password-reset email. Reset tokens expire after 60 minutes, are stored hashed, are single-use and invalidate previous account sessions after reset. Disabled accounts cannot reset.
 
 APP_URL must match the site address; for current development use http://localhost/avelle. Localhost email links work on this computer only. Set your HTTPS domain when publishing. Replace demo policy/contact details before public launch. Payment gateway remains deferred.
+
+
+Start `Start-StoreTasks.ps1` after XAMPP starts (or use `Start-Local.ps1`). Stop it with `Stop-StoreTasks.ps1` before shutting down XAMPP. Restart it after Windows restarts. On a server, configure `php artisan schedule:run` every minute. Never commit `.env`, mail logs, database mail payloads or verification/reset links. See README for complete verification, wallet and scheduler behavior.

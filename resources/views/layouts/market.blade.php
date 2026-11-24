@@ -5,6 +5,7 @@ $navCategories ?? \App\Support\Shop::categories()->whereIn('id', \App\Support\Sh
 $liveOffers = $liveOffers ?? \App\Support\StoreOffers::visible();
 $context = [
 'base' => url('/'),
+'referral_code' => session('referral_code'),
 'csrf' => csrf_token(),
 'user' => auth()
 ->user()
@@ -34,7 +35,7 @@ $pageProducts = isset($product)
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('market.css') }}?v=11">@stack('head')
+    <link rel="stylesheet" href="{{ asset('market.css') }}?v=11"><link rel="stylesheet" href="{{ asset('engagement.css') }}?v=1">@stack('head')
 </head>
 
 <body>
@@ -96,7 +97,13 @@ $pageProducts = isset($product)
             <p>{{ $error }}</p>
             @endforeach
         </div>
-        @endif @yield('content')
+        @endif
+        @auth
+            @if (!auth()->user()->hasVerifiedEmail() && !request()->is('email/*'))
+                <div class="verification-banner">Confirm your email before placing your first order.<a href="{{ url('/email/verify') }}">Verify email →</a></div>
+            @endif
+        @endauth
+        @yield('content')
     </main>
     <footer class="market-footer">
         <div class="shell footer-grid">
@@ -146,7 +153,7 @@ $pageProducts = isset($product)
     <script type="application/json" id="pageProducts">
         @json($pageProducts)
     </script>
-    <script src="{{ asset('market.js') }}?v=9"></script><script src="{{ asset('auth-return.js') }}?v=1"></script>@stack('scripts')
+    <script src="{{ asset('market.js') }}?v=10"></script><script src="{{ asset('auth-return.js') }}?v=1"></script>@stack('scripts')
 </body>
 
 </html>

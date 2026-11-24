@@ -157,6 +157,7 @@ try {
     Auth::login($users["b"]);
     denied(fn() => $offers->save(req($input + ["id" => $p->id])), "Seller cannot edit another seller coupon");
     denied(fn() => $offers->toggle($p->id), "Seller cannot toggle another seller coupon");
+    $buyer->markEmailAsVerified();
     Auth::login($buyer);
     denied(fn() => $offers->save(req($input)), "Customer cannot create seller coupons");
     Auth::login($users["a"]);

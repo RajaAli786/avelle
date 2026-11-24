@@ -196,7 +196,8 @@
                 <dt>Discount {{ $order->code }}</dt>
                 <dd>−₹{{ $order->discount }}</dd>
             </div>
-            <div class="total">
+            @if ($order->wallet_spent ?? 0)<div><dt>Wallet credit</dt><dd>−₹{{ number_format($order->wallet_spent) }}</dd></div>@endif
+                    <div class="total">
                 <dt>Total</dt>
                 <dd>₹{{ $order->total }}</dd>
             </div>

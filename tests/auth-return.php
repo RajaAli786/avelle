@@ -68,6 +68,7 @@ try {
         'password'=>$password,'password_confirmation'=>$password,
     ],'POST'));
     check($registered->getTargetUrl()===$registerTarget&&Auth::check(),'Account creation signs in and returns to the originating page');
+    Auth::user()->markEmailAsVerified();
     $view=(new MarketplaceController)->checkout();
     check(str_contains($view->render(),'checkoutForm'),'Authenticated customer can continue to checkout');
 

@@ -88,7 +88,7 @@ async function request(path, data, method = "POST") {
   }
   if (!response.ok) {
     const error = new Error(Object.values(result.errors || {}).flat()[0] || result.message || "Please try again.");
-    if (response.status === 401 || response.status === 419) {
+    if (response.status === 401 || response.status === 419 || result.login_url) {
       error.loginUrl = result.login_url || url("/account/login") + "?return_to=" + encodeURIComponent(location.href);
     }
     throw error;
@@ -411,6 +411,7 @@ function summaryHTML(checkout = false) {
     (shipping ? money(shipping) : "FREE") +
     "</dd></div><div><dt>Coupon savings</dt><dd>−" +
     money(discount) +
+    '</dd></div><div><dt>Wallet credit</dt><dd>−' + money(quote?.wallet_used || 0) +
     '</dd></div><div class="summary-total"><dt>Total amount</dt><dd>' +
     money(total) +
     "</dd></div></dl>" +
@@ -429,6 +430,10 @@ function summaryHTML(checkout = false) {
       : "Your bag qualifies for free shipping.") +
     "</p><small>Cash on delivery · Prices are verified before your order is placed.</small>"
   );
+}
+if (!code && ctx.referral_code) {
+  code = ctx.referral_code;
+  localSave();
 }
 let renderSequence = 0;
 async function renderCart() {
@@ -482,7 +487,7 @@ async function renderCart() {
   quote = null;
   quoteError = "";
   try {
-    const result = await request("/api/promotions/quote", { items: cart, code: code || null });
+    const result = await request("/api/promotions/quote", { items: cart, code: code || null, use_wallet: $("#useWallet")?.checked ? 1 : 0 });
     if (sequence !== renderSequence) return;
     quote = result;
   } catch (error) {
@@ -729,7 +734,8 @@ document.addEventListener("submit", async (e) => {
       const data = Object.fromEntries(new FormData(e.target));
       data.items = cart;
       data.code = code || null;
-      const fingerprint = JSON.stringify({ cart, code });
+      data.use_wallet = data.use_wallet ? 1 : 0;
+      const fingerprint = JSON.stringify({ cart, code, use_wallet: Boolean(data.use_wallet) });
       let checkout;
       try {
         checkout = JSON.parse(sessionStorage.getItem("avelle-checkout-key"));
@@ -840,3 +846,5 @@ setInterval(() => {
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) refreshOffers();
 });
+
+document.getElementById('useWallet')?.addEventListener('change', () => renderCart());

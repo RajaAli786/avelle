@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Support\SellerAccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
-
 class SellerAccountController
 {
     public function update(Request $r)
@@ -36,7 +33,13 @@ class SellerAccountController
                     ->whereIn("email", [$old, $d["email"]])
                     ->delete();
             }
+            if ($old !== $u->email) {
+                $u->email_verified_at = null;
+            }
             $u->save();
+            if ($old !== $u->email) {
+                DB::afterCommit(fn () => $u->sendEmailVerificationNotification());
+            }
         });
         if ($old !== $u->email) {
             $r->session()->regenerate();

@@ -1,0 +1,22 @@
+.verification-page { padding: 64px 20px; }
+.verification-card { max-width: 620px; margin: auto; text-align: center; }
+.verification-card h1 { font-size: clamp(28px, 4vw, 38px); color: #302338; }
+.verification-card p { font-size: 16px; line-height: 1.7; color: #65556b; }
+.verification-icon { margin: 22px auto; border-radius: 24px; width: 82px; height: 82px; display: grid; place-items: center; background: #fce7f1; color: #d62b78; font-size: 40px; }
+.verification-banner { background: #fff5df; color: #684b14; border-bottom: 1px solid #eadab9; padding: 13px 20px; font-size: 14px; text-align: center; }
+.verification-banner a { color: #684b14; font-weight: 700; text-decoration: underline; margin-left: 8px; }
+.wallet-hero { padding: clamp(24px, 4vw, 42px); border-radius: 22px; background: linear-gradient(125deg, #fce7f1, #efeafa); color: #37243f; margin-bottom: 24px; }
+.wallet-hero h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.16; margin: 14px 0; }
+.wallet-balance { display: flex; flex-direction: column; gap: 4px; margin: 25px 0; }
+.wallet-balance strong { font-size: 38px; }
+.wallet-share h2 { letter-spacing: 2px; color: #b92365; font-size: clamp(22px, 4vw, 30px); overflow-wrap: anywhere; }
+.wallet-share input { width: 100%; font-size: 15px; }
+.wallet-rules { padding-left: 20px; line-height: 1.8; color: #65556b; }
+.wallet-table-wrap { overflow-x: auto; }
+.wallet-table { border-collapse: collapse; width: 100%; font-size: 14px; text-align: left; }
+.wallet-table th { background: #faf1f7; color: #59405e; font-size: 13px; }
+.wallet-table td, .wallet-table th { padding: 14px 12px; border-bottom: 1px solid #eee5ed; }
+.wallet-status { padding: 4px 8px; border-radius: 6px; background: #f1edf8; color: #5f4584; }
+.wallet-choice { display: flex; align-items: flex-start; gap: 12px; padding: 18px; background: #f6f0fb; border: 1px solid #e0d3ef; border-radius: 12px; margin-bottom: 22px; }
+.wallet-choice input { width: 18px; height: 18px; flex: 0 0 18px; margin-top: 3px; accent-color: #b82c70; }
+.wallet-choice p { margin: 5px 0 0; color: #65556b; font-size: 14px; line-height: 1.6; }

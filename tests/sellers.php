@@ -200,6 +200,7 @@ try {
         "email" => "seller-buyer-" . uniqid() . "@example.test",
         "password" => "BuyerPassword123!",
     ]);
+    $buyer->markEmailAsVerified();
     Auth::login($buyer);
     denied(
         fn() => $sa->review(req(["status" => "approved", "commission_rate" => 0]), $sA->id),

@@ -51,6 +51,7 @@ class StoreController
             "items.*.variant_id" => "nullable|integer|min:1",
             "items.*.quantity" => "required|integer|min:1|max:10",
             "code" => "nullable|string|max:40",
+            "use_wallet" => "nullable|boolean",
         ];
     }
     private function discount(
@@ -63,6 +64,18 @@ class StoreController
     ): array {
         if (!$code) {
             return [0, null];
+        }
+        $referral = \App\Support\ReferralWallet::referral($code, \Illuminate\Support\Facades\Auth::user());
+        if ($referral) {
+            $settings = $referral['settings'];
+            $discount = min($subtotal, (int) $settings['referral_friend_discount']);
+            if ($subtotal - $discount < (int) $settings['referral_minimum']) {
+                throw ValidationException::withMessages(['code' => 'This referral requires ₹' . $settings['referral_minimum'] . ' of merchandise after the friend discount.']);
+            }
+            return [$discount, (object) [
+                'id' => null, 'code' => $referral['code'], 'kind' => 'referral',
+                'owner_email' => $referral['owner']->email, 'scope' => 'store', 'seller_id' => null, 'targets' => '[]',
+            ]];
         }
         $query = DB::table("promotions")->where("code", strtoupper(trim($code)));
         $p = ($lock ? $query->lockForUpdate() : $query)->first();
@@ -130,11 +143,17 @@ class StoreController
         [$discount, $p] = $this->discount($data["code"] ?? null, $items, $subtotal);
         $s = \App\Support\Shop::settings();
         $shipping = $subtotal >= (int) $s["free_shipping_minimum"] ? 0 : (int) $s["shipping_fee"];
+        $walletUsed = 0;
+        $customer = \Illuminate\Support\Facades\Auth::user();
+        if (!empty($data['use_wallet']) && $customer?->hasVerifiedEmail() && \App\Support\ReferralWallet::settings()['wallet_enabled']) {
+            $walletUsed = min(max(0, (int) \App\Support\ReferralWallet::account($customer->id)->balance), max(0, $subtotal - $discount));
+        }
         return response()->json([
+            'wallet_used' => $walletUsed,
             "items" => $items,
             "subtotal" => $subtotal,
             "shipping" => $shipping,
-            "total" => $subtotal + $shipping - $discount,
+            "total" => $subtotal + $shipping - $discount - $walletUsed,
             "code" => $p?->code,
             "discount" => $discount,
             "note" => $p?->kind === "referral" ? "First-order eligibility is checked at checkout." : null,
@@ -150,6 +169,10 @@ class StoreController
                 'message' => 'Please sign in or create an account to place your order.',
                 'login_url' => url('/account/login') . '?return_to=' . rawurlencode($target),
             ], 401);
+        }
+        if (!\Illuminate\Support\Facades\Auth::user()->hasVerifiedEmail()) {
+            $r->session()->put('url.intended', url('/checkout'));
+            return response()->json(['message' => 'Verify your email before placing an order.', 'login_url' => url('/email/verify')], 403);
         }
         $rules = array_merge($this->rules(), [
             "name" => "required|string|max:100",
@@ -171,7 +194,8 @@ class StoreController
             ]);
         }
         $result = DB::transaction(function () use ($data) {
-            $user = \Illuminate\Support\Facades\Auth::user();
+            $user = \App\Models\User::where('id', \Illuminate\Support\Facades\Auth::id())->lockForUpdate()->firstOrFail();
+            abort_unless($user->is_active && $user->hasVerifiedEmail(), 403);
             if ($user && !empty($data["checkout_key"])) {
                 $existing = DB::table("orders")
                     ->where("checkout_key", $data["checkout_key"])
@@ -208,7 +232,7 @@ class StoreController
             foreach ($requested as $line) {
                 \App\Support\Inventory::take($line);
             }
-            if ($promo) {
+            if ($promo?->id) {
                 DB::table("promotions")->where("id", $promo->id)->increment("used");
             }
             $settings = \App\Support\Shop::settings();
@@ -235,6 +259,18 @@ class StoreController
                     ])
                     ->all(),
             );
+            $walletSpent = !empty($data['use_wallet'])
+                ? \App\Support\ReferralWallet::spend($user->id, $orderId, $subtotal - $discount) : 0;
+            if ($walletSpent) {
+                $total -= $walletSpent;
+                $items = \App\Support\ReferralWallet::withWalletShares($items, $discount, $promo, $walletSpent);
+                DB::table('orders')->where('id', $orderId)->update([
+                    'wallet_spent' => $walletSpent, 'total' => $total,
+                    'items' => json_encode($items),
+                    'payment_status' => $total === 0 ? 'paid' : 'unpaid',
+                ]);
+            }
+            \App\Support\ReferralWallet::capture($orderId, $promo, $items, $subtotal, $discount);
             \App\Support\SellerOrders::split($orderId, $items, $discount, $promo);
             DB::table("order_events")->insert([
                 "order_id" => $orderId,
@@ -254,6 +290,7 @@ class StoreController
                 "account_created" => false,
             ];
         });
+        $request->session()->forget('referral_code');
         $result["csrf_token"] = csrf_token();
         $result["account"] = \Illuminate\Support\Facades\Auth::user()->only([
             "name",

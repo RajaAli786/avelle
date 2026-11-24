@@ -117,7 +117,8 @@ class MarketplaceController
         return view("market.shop", [
             "products" => $products,
             "category" => $category,
-            "brands" => Shop::productQuery()->whereNotNull("brand")->distinct()->pluck("brand"),
+            "brands" => Shop::productQuery()->whereIn('brand_id', DB::table('brands')->where('active', true)->select('id'))
+                ->whereNotNull('brand')->orderBy('brand')->distinct()->pluck('brand'),
             "sizes" => DB::table("products")
                 ->where("active", true)
                 ->pluck("sizes")
@@ -174,7 +175,13 @@ class MarketplaceController
             $target = request()->is('checkout') ? request()->fullUrl() : url('/checkout');
             return \App\Support\AuthReturn::login(request(), $target);
         }
+        if (!Auth::user()->hasVerifiedEmail()) {
+            request()->session()->put('url.intended', url('/checkout'));
+            return redirect(url('/email/verify'));
+        }
         return view("market.checkout", [
+            'walletBalance' => max(0, (int) \App\Support\ReferralWallet::account(Auth::id())->balance),
+            'walletEnabled' => (bool) \App\Support\ReferralWallet::settings()['wallet_enabled'],
             "addresses" => Auth::check()
                 ? DB::table("addresses")->where("user_id", Auth::id())->orderByDesc("is_default")->get()
                 : collect(),

@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\User;
 use App\Support\SellerAccess;
 use App\Support\SellerOrders;
@@ -10,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
-
 class SellerController
 {
     private function rules(): array
@@ -54,6 +51,7 @@ class SellerController
                         ->only(["name", "email", "password"])
                         ->all(),
                 );
+                DB::afterCommit(fn () => $u->sendEmailVerificationNotification());
             }
             $u = User::where("id", $u->id)->lockForUpdate()->first();
             abort_unless($u->is_active, 403);
@@ -76,13 +74,13 @@ class SellerController
                         "description",
                     ])
                     ->all() + [
-                        "user_id" => $u->id,
-                        "slug" => Str::slug($d["shop_name"]) . "-" . strtolower(Str::random(8)),
-                        "status" => "pending",
-                        "commission_rate" => 10,
-                        "created_at" => now(),
-                        "updated_at" => now(),
-                    ],
+                    "user_id" => $u->id,
+                    "slug" => Str::slug($d["shop_name"]) . "-" . strtolower(Str::random(8)),
+                    "status" => "pending",
+                    "commission_rate" => 10,
+                    "created_at" => now(),
+                    "updated_at" => now(),
+                ],
             );
             return $u;
         });
@@ -146,6 +144,7 @@ class SellerController
             "products" => $products,
             "shipments" => $shipments,
             "catalogCategories" => \App\Support\Shop::categories(),
+            'catalogBrands' => DB::table('brands')->orderBy('sort_order')->orderBy('name')->get(),
             "productImages" => DB::table("product_images")
                 ->whereIn("product_id", $ids)
                 ->orderBy("position")

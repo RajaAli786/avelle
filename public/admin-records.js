@@ -4,7 +4,8 @@
   if (!document.body.classList.contains("admin-workspace")) return;
 
   const definitions = {
-    products: { title: "Products", columns: { name: "Product", category: "Category", price: "Price", stock: "Stock", status: "Status" } },
+    products: { title: "Products", columns: { name: "Product", category: "Category", brand: "Brand", price: "Price", stock: "Stock", status: "Status" } },
+    brands: { title: "Brands", columns: { name: "Brand", slug: "Slug", products: "Products", status: "Status" } },
     categories: { title: "Categories", columns: { name: "Category", parent: "Parent", images: "Images", status: "Status" } },
     orders: { title: "Orders", columns: { number: "Order", customer: "Customer", date: "Placed", amount: "Amount", status: "Status", payment: "Payment" } },
     customers: { title: "Users and customers", columns: { name: "Name", email: "Email", role: "Role", status: "Access", joined: "Joined" } },

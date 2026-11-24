@@ -57,6 +57,9 @@ class AdminController
                 ->limit(200)
                 ->get(),
             "catalogCategories" => \App\Support\Shop::categories(),
+            'catalogBrands' => DB::table('brands')->select('brands.*')->selectSub(
+                DB::table('products')->selectRaw('count(*)')->whereColumn('brand_id', 'brands.id'), 'product_count'
+            )->orderBy('sort_order')->orderBy('name')->get(),
             "productImages" => DB::table("product_images")
                 ->orderBy("position")
                 ->orderBy("id")
@@ -104,6 +107,12 @@ class AdminController
         }
         $r->validate(["review_status" => "nullable|in:all,pending,approved,rejected"]);
         $data = [
+            'referralSettings' => \App\Support\ReferralWallet::settings(),
+            'referralRewards' => DB::table('referral_rewards')->join('users', 'users.id', '=', 'referral_rewards.referrer_id')
+                ->select('referral_rewards.*', 'users.name as referrer_name', 'users.email as referrer_email')->latest('referral_rewards.id')->limit(100)->get(),
+            'walletTransactions' => DB::table('wallet_entries')->join('users', 'users.id', '=', 'wallet_entries.user_id')
+                ->select('wallet_entries.*', 'users.name', 'users.email')->latest('wallet_entries.id')->limit(100)->get(),
+            'emailDeliveries' => DB::table('store_mail_deliveries')->latest()->limit(100)->get(),
             "products" => DB::table("products")->orderBy("id")->get(),
             "promotions" => DB::table("promotions")->latest()->get(),
             "orders" => DB::table("orders")->latest()->limit(100)->get(),
@@ -216,7 +225,7 @@ class AdminController
             ) {
                 throw \Illuminate\Validation\ValidationException::withMessages([
                     "status" =>
-                    "Update marketplace shipments in Seller orders. Use this form for COD collection or full-order cancellation.",
+                        "Update marketplace shipments in Seller orders. Use this form for COD collection or full-order cancellation.",
                 ]);
             }
             if ($o->status === "cancelled") {
@@ -236,6 +245,7 @@ class AdminController
                 unset($values["payment_status"]);
             }
             DB::table("orders")->where("id", $id)->update($values);
+            \App\Support\ReferralWallet::sync($id);
             if (!DB::table("seller_orders")->where("order_id", $id)->whereNotNull("seller_id")->exists()) {
                 DB::table("seller_orders")
                     ->where("order_id", $id)
@@ -314,7 +324,13 @@ class AdminController
                 $target->auth_version++;
                 $target->remember_token = \Illuminate\Support\Str::random(60);
             }
+            if ($oldEmail !== $target->email) {
+                $target->email_verified_at = null;
+            }
             $target->save();
+            if ($oldEmail !== $target->email) {
+                DB::afterCommit(fn () => $target->sendEmailVerificationNotification());
+            }
             if ($oldEmail !== $target->email) {
                 DB::table("promotions")
                     ->where("kind", "referral")
