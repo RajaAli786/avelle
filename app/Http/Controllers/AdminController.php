@@ -52,7 +52,7 @@ class AdminController
             "sellerShipments" => DB::table("seller_orders")
                 ->join("orders", "orders.id", "=", "seller_orders.order_id")
                 ->leftJoin("sellers", "sellers.id", "=", "seller_orders.seller_id")
-                ->select("seller_orders.*", "orders.reference", "orders.payment_status", "sellers.shop_name")
+                ->select("seller_orders.*", "orders.reference", "orders.payment_status", "orders.phone as customer_phone", "orders.name as customer_name", "sellers.shop_name")
                 ->latest("seller_orders.id")
                 ->limit(200)
                 ->get(),
@@ -89,6 +89,7 @@ class AdminController
                     "return_requests.*",
                     "orders.reference",
                     "orders.total as order_total",
+                    "orders.phone as customer_phone",
                     "users.name as customer",
                 )
                 ->latest("return_requests.id")
@@ -253,6 +254,9 @@ class AdminController
             }
             if ($d["status"] !== $o->status) {
                 DB::afterCommit(fn() => \App\Support\StoreMail::status($o->reference, $d["status"]));
+            } elseif (collect($values)->only(['carrier', 'tracking_number', 'tracking_url', 'payment_status'])
+                ->contains(fn ($value, $key) => (string) ($o->$key ?? '') !== (string) ($value ?? ''))) {
+                DB::afterCommit(fn () => \App\Support\StoreMail::detailsUpdated($o->reference));
             }
             if ($d["status"] !== $o->status) {
                 DB::table("order_events")->insert([

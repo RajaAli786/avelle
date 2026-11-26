@@ -53,7 +53,7 @@ try {
 
     StoreMail::order($reference);
     StoreMail::status($reference,'shipped');
-    $mail=Mail::sent(StoreMessage::class)->first(fn($m)=>$m->heading==='Order confirmed');
+    $mail=Mail::sent(StoreMessage::class)->first(fn($m)=>$m->heading==='Order placed');
     check(count($mail->orderDetails['items'])===3,'Confirmation email includes every product');
     $html=$mail->render();
     foreach($items as $item) check(str_contains($html,e($item['name'])),'Email renders product '.$item['name']);

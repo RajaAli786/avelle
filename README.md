@@ -422,3 +422,20 @@ php artisan store:referrals-process
 ```
 
 Validation: `php tests/engagement.php` covers signed verification/ownership/expiry, checkout protection, admin permissions, reward eligibility and reversal, duplicate-credit protection, wallet spend/refunds and partial-return allocation, customer isolation, encrypted email failure retention, backoff/attempt limits, worker claims and manual retry. All mail transports in this suite are mocked and fixtures roll back.
+
+
+## Order communication: email and WhatsApp
+
+Automatic transactional emails remain enabled. Order placement, confirmation, shipping, delivery and cancellation send customer updates. Individual split-shipment progress is notified even while another shipment remains at an earlier stage. Payment/tracking edits send an update when the order status itself is unchanged. Return requested, approved, rejected, received and completed steps also notify the customer. Unchanged form submissions do not send another update. Emails retain all ordered products/images and use the existing encrypted outbox and retries.
+
+Admin → Orders → View includes Send on WhatsApp. The same action appears in shipment and return details, using that record's current status. This free manual feature opens `wa.me` with a prepared message; an administrator must review and press Send in WhatsApp. Merely viewing or updating a record does not contact WhatsApp or send a WhatsApp message. Nothing replaces or disables email. Customer phone numbers support Indian ten-digit mobile numbers or +91 format; invalid/missing numbers show an explanation instead of a broken link. Order text includes the readable order number, all items, quantities, amounts, payment and available tracking. Photos/attachments are not sent by this text link. Automatic WhatsApp/API delivery is not implemented.
+
+Validation: `php tests/order-communication.php` checks phone validation, URL encoding, multi-product messages, status coverage, split-shipment notifications, returns, tracking edits and unchanged-save behavior. Email tests are mocked and test fixtures roll back; no WhatsApp destination is opened during tests.
+
+## Safe error pages
+
+`APP_DEBUG=false` is the shared configuration default. The browser/API exception renderer also suppresses diagnostic details if debug is accidentally enabled. Database connection outages return a branded HTTP 503 page; missing routes return 404; unexpected application/SQL programming errors return 500. API failures return a safe message and HTTP status without SQL, credentials, exception names or traces. Normal validation feedback and sign-in redirects remain intact.
+
+Error pages are standalone and do not query the database or load account/storefront layouts, so they work while MySQL is unavailable. Details remain in private server logs. If PHP/Apache itself is stopped, the browser shows a network connection error because no application server is available to serve a page. Run `php artisan config:clear` after changing an existing installation's `.env`; restart a long-running development server if required.
+
+Validation: `php tests/safe-errors.php` checks HTML and JSON redaction with debug both on/off, 404/403/405/419/429/500/503 responses, validation preservation, cache/indexing headers, database-free rendering, and real HTTP-kernel requests against an unavailable test database port. It never stops MySQL or changes customer records.

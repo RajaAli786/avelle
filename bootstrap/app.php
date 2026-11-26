@@ -16,7 +16,11 @@ $app = Application::configure(basePath: dirname(__DIR__))
             ],
         );
     })
-    ->withExceptions(function (Illuminate\Foundation\Configuration\Exceptions $exceptions): void {})
+    ->withExceptions(function (Illuminate\Foundation\Configuration\Exceptions $exceptions): void {
+        $exceptions->render(function (\Throwable $exception, \Illuminate\Http\Request $request) {
+            return \App\Support\SafeErrors::render($exception, $request);
+        });
+    })
     ->create();
 if (PHP_OS_FAMILY === "Windows") {
     $app->addAbsoluteCachePathPrefix(substr(__DIR__, 0, 3));

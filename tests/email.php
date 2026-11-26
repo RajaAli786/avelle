@@ -183,7 +183,7 @@ try {
     check(
         Mail::sent(
             StoreMessage::class,
-            fn($m) => $m->heading === "Order confirmed" &&
+            fn($m) => $m->heading === "Order placed" &&
                 $m->hasTo($u->email) &&
                 in_array("Total: ₹1079 · Cash on delivery", $m->lines),
         )->isNotEmpty(),

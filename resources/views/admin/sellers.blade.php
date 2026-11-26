@@ -67,6 +67,7 @@
     <details class="editor-card" id="shipment-{{ $shipment->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'shipments', 'title' => 'Shipment #'.$shipment->id, 'shipment' => '#'.$shipment->id, 'order' => \App\Support\OrderDisplay::reference((object)['id'=>$shipment->order_id]), 'shop' => $shipment->shop_name ?? 'Avelle', 'amount' => '₹'.number_format($shipment->seller_amount), 'status' => ucfirst($shipment->status), 'payout' => $shipment->settled_at ? 'Recorded' : 'Pending']) }}'>
         <summary class="editor-summary">{{ $shipment->reference }} · {{ $shipment->shop_name ?? 'Avelle store' }} ·
             Shipment #{{ $shipment->id }} · {{ $shipment->status }}</summary>
+        @include('admin.whatsapp-action', ['whatsappUrl' => \App\Support\OrderWhatsApp::shipmentUrl($shipment)])
         @foreach (json_decode($shipment->items) as $line)
         <p>{{ $line->name }} · {{ $line->size }} × {{ $line->quantity }}</p>
         @endforeach

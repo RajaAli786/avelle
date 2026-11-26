@@ -480,6 +480,9 @@ class CatalogAdminController
             }
             DB::table("return_requests")->where("id", $id)->update($values);
             \App\Support\ReferralWallet::sync($order->id);
+            if ($ret->status !== $d['status']) {
+                DB::afterCommit(fn () => \App\Support\StoreMail::returnStatus($id));
+            }
         });
         return redirect(url("/admin") . "#returns")->with(
             "success",

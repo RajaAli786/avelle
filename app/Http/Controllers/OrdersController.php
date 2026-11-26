@@ -102,7 +102,7 @@ class OrdersController
                     "return" => "Select at least one item to return.",
                 ]);
             }
-            DB::table("return_requests")->insert([
+            $returnId = DB::table("return_requests")->insertGetId([
                 "order_id" => $locked->id,
                 "user_id" => Auth::id(),
                 "items" => json_encode($selected),
@@ -112,6 +112,7 @@ class OrdersController
                 "created_at" => now(),
                 "updated_at" => now(),
             ]);
+            DB::afterCommit(fn () => \App\Support\StoreMail::returnStatus($returnId));
         });
         return back()->with("success", "Return request saved. You can follow its status on this order page.");
     }

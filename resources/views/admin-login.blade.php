@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    @include('market.favicon')
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Admin sign in · AVELLE</title>

@@ -117,8 +117,10 @@ class SellerOrders
                     "updated_at" => now(),
                 ]);
             }
-            if ($status !== $order->status) {
-                DB::afterCommit(fn() => StoreMail::status($order->reference, $status));
+            $trackingChanged = collect($values)->only(['carrier', 'tracking_number', 'tracking_url'])
+                ->contains(fn ($value, $key) => (string) ($row->$key ?? '') !== (string) ($value ?? ''));
+            if ($data['status'] !== $row->status || $trackingChanged) {
+                DB::afterCommit(fn () => StoreMail::shipment($id));
             }
         });
     }

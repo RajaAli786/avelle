@@ -137,3 +137,8 @@
 .admin-workspace .brand-logo-preview { object-fit: contain; padding: 10px; border: 1px solid #e3dded; background: #fff; border-radius: 12px; }
 .admin-workspace #brands .admin-table-shell { border-top: 3px solid #a469b8; }
 .admin-workspace #brands thead th { background: #f5edf9; color: #624173; }
+
+.admin-workspace .admin-whatsapp-action { padding: 18px; margin: 20px 0; background: #effaf3; border: 1px solid #ccebd8; border-radius: 12px; }
+.admin-workspace .admin-whatsapp-action p { margin: 10px 0 0; color: #385946; font-size: 14px; line-height: 1.6; }
+.admin-workspace .admin-whatsapp-button { display: inline-flex; gap: 9px; align-items: center; padding: 11px 17px; background: #147a45; color: #fff; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; }
+.admin-workspace .admin-whatsapp-button:hover { background: #106336; color: #fff; }

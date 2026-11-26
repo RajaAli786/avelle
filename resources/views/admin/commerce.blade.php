@@ -51,6 +51,7 @@
 @forelse($returnQueue as $r)
     <details class="editor-card" id="return-{{ $r->id }}" data-search-row data-admin-record='{{ json_encode(['group' => 'returns', 'title' => 'Return #'.$r->id, 'order' => \App\Support\OrderDisplay::reference((object)['id'=>$r->order_id]), 'customer' => $r->customer, 'reason' => $r->reason, 'refund' => '₹'.number_format($r->refund_amount), 'status' => ucfirst($r->status)]) }}'>
         <summary>{{ $r->reference }} · {{ $r->customer }} · {{ $r->status }}</summary>
+        @include('admin.whatsapp-action', ['whatsappUrl' => \App\Support\OrderWhatsApp::returnUrl($r)])
         <p>{{ $r->reason }} — {{ $r->notes }}</p>
         @foreach (json_decode($r->items) as $line)
         <p>{{ $line->name ?? 'Item' }} × {{ $line->quantity }}</p>

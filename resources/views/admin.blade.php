@@ -2,13 +2,14 @@
 <html lang="en">
 
 <head>
+    @include('market.favicon')
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>AVELLE · Admin dashboard</title>
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin.css') }}?v=7">
-    <link rel="stylesheet" href="{{ asset('admin-workspace.css') }}?v=4">
+    <link rel="stylesheet" href="{{ asset('admin-workspace.css') }}?v=5">
 </head>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary admin-workspace" data-initial-page="{{ old('_section', 'dashboard') }}">
@@ -404,6 +405,7 @@
                                     <section><h3>Customer and delivery</h3><p><strong>{{ $o->name }}</strong><br>{{ $o->email }}<br>{{ $o->phone }}<br>{{ $o->address }}, {{ $o->city }} {{ $o->pincode }}</p></section>
                                     <section><h3>Order summary</h3><p>Placed {{ date('d M Y, h:i A', strtotime($o->created_at)) }} IST<br>Subtotal ₹{{ number_format($o->subtotal) }}<br>Shipping ₹{{ number_format($o->shipping) }}<br>Discount ₹{{ number_format($o->discount) }} {{ $o->code }}<br>Wallet credit ₹{{ number_format($o->wallet_spent ?? 0) }}<br><strong>Total ₹{{ number_format($o->total) }}</strong></p></section>
                                 </div>
+                                @include('admin.whatsapp-action', ['whatsappUrl' => \App\Support\OrderWhatsApp::url($o)])
                                 <section class="admin-order-items"><h3>Items</h3>
                                     @foreach (\App\Support\OrderDisplay::items($o) as $item)
                                         <div class="admin-order-item"><img src="{{ $item['image_url'] }}" alt="{{ $item['name'] }}" width="64" height="80"><div><strong>{{ $item['name'] }}</strong><p>{{ $item['size'] }} · Qty {{ $item['quantity'] }}</p></div><strong>₹{{ number_format($item['price'] * $item['quantity']) }}</strong></div>
